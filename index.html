@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Model Registry</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background-color: #f1f7f3; /* soft green */
+    }
+
+    .wrapper {
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 1100px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      position: relative;
+    }
+
+    /* Clickable top-right logo */
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      height: 65px;
+      width: auto;
+      cursor: pointer;
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      padding-right: 130px; /* avoid overlapping logo */
+    }
+
+    .muted {
+      color: #666;
+      font-size: 13px;
+      padding-right: 130px;
+    }
+
+    /* Guidance "board" */
+    .board {
+      margin-top: 18px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      background: #f6fbf7;
+      border: 1px solid #e3efe6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .board-title {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .board-text {
+      margin: 2px 0 0 0;
+      color: #666;
+      font-size: 13px;
+      max-width: 720px;
+    }
+
+    .board a { text-decoration: none; }
+
+    .board-btn {
+      padding: 10px 12px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: none;
+      background: #d9eee0;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .board-btn:hover {
+      background: #cde5d6;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    input, select {
+      padding: 8px 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #dcdcdc;
+      min-width: 220px;
+    }
+
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      background: #d9eee0;
+      cursor: pointer;
+      min-width: 90px;
+    }
+
+    button:hover {
+      background: #cde5d6;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 13px;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #eef5f0;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2f6f4f;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #f6f6f6;
+      padding: 1px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="card">
+
+    <!-- Clickable EuroSDR logo -->
+    <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
+      <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
+    </a>
+
+    <h1>AI Model Registry</h1>
+    <div class="muted">
+      Local metadata registry (no server required). Data stored in <code>models.js</code>.
+    </div>
+
+    <!-- Guidance board / panel -->
+    <div class="board">
+      <div>
+        <div class="board-title">Metadata guidance</div>
+        <div class="board-text">
+          How to describe and maintain metadata records (fields, conventions, and examples).
+        </div>
+      </div>
+      <a href="metadata-guidance.html">
+        <button class="board-btn">Open guidance</button>
+      </a>
+    </div>
+
+    <div class="filters">
+      <label>
+        Search
+        <input id="q" placeholder="e.g. Sentinel-2, EPSG:3857, transformer..." />
+      </label>
+
+      <label>
+        Organisation
+        <select id="org">
+          <option value="">All</option>
+        </select>
+      </label>
+
+      <label>
+        Model Status
+        <select id="status">
+          <option value="">All</option>
+          <!-- Auto-filled from data -->
+        </select>
+      </label>
+
+      <label>
+        Sort
+        <select id="sort">
+          <option value="name_asc">Model name (A–Z)</option>
+          <option value="name_desc">Model name (Z–A)</option>
+          <option value="org_asc">Organisation (A–Z)</option>
+          <option value="org_desc">Organisation (Z–A)</option>
+          <option value="status_asc">Model Status (A–Z)</option>
+          <option value="status_desc">Model Status (Z–A)</option>
+        </select>
+      </label>
+
+      <button id="clear">Clear</button>
+    </div>
+
+    <div class="muted" id="count" style="margin-top:12px;"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Model name</th>
+          <th>Organisation</th>
+          <th>Model Status</th>
+          <th>AI task</th>
+          <th>Primary performance metric</th>
+          <th>License</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+  </div>
+</div>
+
+<script src="models.js"></script>
+<script>
+  const els = {
+    q: document.getElementById("q"),
+    org: document.getElementById("org"),
+    status: document.getElementById("status"),
+    sort: document.getElementById("sort"),
+    clear: document.getElementById("clear"),
+    count: document.getElementById("count"),
+    rows: document.getElementById("rows"),
+  };
+
+  function normalize(s) {
+    return (s || "").toString().toLowerCase().trim();
+  }
+
+  function esc(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function buildSearchText(m) {
+    return normalize([
+      m.modelName,
+      m.organisation,
+      m.modelStatus,
+      m.aiTask,
+      m.inputSpecification,
+      m.outputSpecification,
+      m.architecture,
+      m.trainingDataOrigin,
+      m.primaryPerformanceMetric,
+      m.license,
+      m.moreInformation
+    ].filter(Boolean).join(" "));
+  }
+
+  const DATA = (Array.isArray(window.MODELS) ? window.MODELS : []).map(m => ({
+    ...m,
+    __searchText: buildSearchText(m)
+  }));
+
+  function uniqueSorted(arr) {
+    return [...new Set(arr.filter(Boolean).map(x => String(x).trim()).filter(Boolean))]
+      .sort((a,b) => a.localeCompare(b));
+  }
+
+  function populateFilters() {
+    // Organisations
+    uniqueSorted(DATA.map(x => x.organisation)).forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      els.org.appendChild(opt);
+    });
+
+    // Model statuses
+    uniqueSorted(DATA.map(x => x.modelStatus)).forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      els.status.appendChild(opt);
+    });
+  }
+
+  function sortItems(items) {
+    const s = els.sort.value;
+    const by = {
+      name_asc:   (a,b) => (a.modelName||"").localeCompare(b.modelName||""),
+      name_desc:  (a,b) => (b.modelName||"").localeCompare(a.modelName||""),
+      org_asc:    (a,b) => (a.organisation||"").localeCompare(b.organisation||""),
+      org_desc:   (a,b) => (b.organisation||"").localeCompare(a.organisation||""),
+      status_asc: (a,b) => (a.modelStatus||"").localeCompare(b.modelStatus||""),
+      status_desc:(a,b) => (b.modelStatus||"").localeCompare(a.modelStatus||""),
+    }[s] || ((a,b)=>0);
+
+    return items.slice().sort(by);
+  }
+
+  function render() {
+    const q = normalize(els.q.value);
+    const org = els.org.value;
+    const status = els.status.value;
+
+    let items = DATA.filter(m => {
+      if (org && (m.organisation || "") !== org) return false;
+      if (status && (m.modelStatus || "") !== status) return false;
+      if (q && !m.__searchText.includes(q)) return false;
+      return true;
+    });
+
+    items = sortItems(items);
+
+    els.count.textContent = items.length + " model(s)";
+
+    els.rows.innerHTML = items.map(m => `
+      <tr>
+        <td>
+          <a href="detail.html?id=${encodeURIComponent(m.id)}">
+            <strong>${esc(m.modelName || m.id)}</strong>
+          </a>
+          <div class="muted">${esc(m.id || "")}</div>
+        </td>
+        <td>${esc(m.organisation || "")}</td>
+        <td>${m.modelStatus ? `<span class="badge">${esc(m.modelStatus)}</span>` : ""}</td>
+        <td>${esc(m.aiTask || "")}</td>
+        <td>${esc(m.primaryPerformanceMetric || "")}</td>
+        <td>${esc(m.license || "")}</td>
+      </tr>
+    `).join("");
+  }
+
+  function wire() {
+    els.q.addEventListener("input", render);
+    els.org.addEventListener("change", render);
+    els.status.addEventListener("change", render);
+    els.sort.addEventListener("change", render);
+    els.clear.addEventListener("click", () => {
+      els.q.value = "";
+      els.org.value = "";
+      els.status.value = "";
+      els.sort.value = "name_asc";
+      render();
+    });
+  }
+
+  populateFilters();
+  wire();
+  render();
+</script>
+
+</body>
+</html>

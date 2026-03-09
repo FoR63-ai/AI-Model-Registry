@@ -30,7 +30,7 @@ window.MODELS = [
     aiTask: "Object detection",
     inputSpecification: "The model requires true orthos and a normalised elevation model in tiff format. Input images must be of size 512x512 pixels. Orthos must be provided as a 4-channel image with 25 cm resolution.",
     outputSpecification: "The model outputs a classified raster with the same spatial resolution as the input imagery. Each pixel is assigned a value 1 or 0 (building – not building). The output preserves the input coordinate reference system.",
-    architecture: "Transformer",
+    architecture: "Segformer",
     trainingDataOrigin: "True orthophotos (0.25 cm) and normalised elevation model.",
     primaryPerformanceMetric: "F-score: 95%.",
     license: "Model not available for external use",
@@ -45,11 +45,12 @@ window.MODELS = [
     aiTask: "Object detection",
     inputSpecification: "The model requires true orthos and a normalised elevation model in tiff format. Input images must be of size 512x512 pixels. Orthos must be provided as a 4-channel image with 25 cm resolution.",
     outputSpecification: "The model outputs a classified raster with the same spatial resolution as the input imagery. Each pixel is assigned a value 1 or 0 (road – not road). The output preserves the input coordinate reference system.",
-    architecture: "Transformer",
+    architecture: "Segformer",
     trainingDataOrigin: "The model has been trained on true orthos from different parts of Sweden. The normalised elevation model is based on Lidar data (1 pts/sqm)",
     primaryPerformanceMetric: "F-score: 85%.",
     license: "Model not available for external use",
     accessLink: "N/A",
     moreInformation: "N/A"
   }
+
 ];

@@ -142,5 +142,4 @@ window.MODELS = [
     accessLink: "Not stated in the source.",
     moreInformation: "Used for transport network maintenance and cartographic updates."
   }
-
 ];

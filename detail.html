@@ -4,278 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Model Detail</title>
-
   <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      background-color: #f1f7f3; /* soft green */
-    }
-
-    .wrapper {
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card {
-      background: white;
-      width: 100%;
-      max-width: 1100px; /* match index width */
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-      position: relative; /* needed for top-right logo */
-    }
-
-    .logo {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      height: 65px;
-      width: auto;
-      cursor: pointer;
-    }
-
-    h1 {
-      margin: 0 0 6px 0;
-      padding-right: 130px; /* avoid overlap with logo */
-    }
-
-    .muted {
-      color: #666;
-      font-size: 13px;
-      padding-right: 130px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 8px;
-      background: #eef5f0;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .label {
-      color: #666;
-      font-size: 13px;
-    }
-
-    .value {
-      white-space: pre-wrap;
-      line-height: 1.35;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 22px 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: #2f6f4f;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    code {
-      background: #f6f6f6;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 12px;
-    }
-
-    pre {
-      font-size: 12px;
-      background: #f6f6f6;
-      padding: 12px;
-      border-radius: 10px;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
-
-    .topbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .left-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    :root { --bg:#f1f7f3; --card:#fff; --line:#e7efe9; --muted:#5f6f66; --text:#17211c; --badge:#eef5f0; }
+    * { box-sizing:border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+    .wrapper { padding: 40px 20px; display: flex; justify-content: center; }
+    .card { background: var(--card); width: 100%; max-width: 1100px; padding: 30px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); position: relative; }
+    .logo { position: absolute; top: 20px; right: 25px; height: 65px; width: auto; }
+    .topbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .left-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    h1 { margin: 0 0 6px 0; padding-right: 130px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 8px; background: var(--badge); font-size: 12px; white-space: nowrap; }
+    .grid { display: grid; grid-template-columns: 260px 1fr; gap: 12px; margin-top: 18px; }
+    .label { color: var(--muted); font-size: 13px; }
+    .value { white-space: pre-wrap; line-height: 1.4; }
+    hr { border: none; border-top: 1px solid #eee; margin: 22px 0; }
+    a { text-decoration: none; color: #2f6f4f; }
+    a:hover { text-decoration: underline; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+    pre { font-size: 12px; background: #f6f6f6; padding: 12px; border-radius: 10px; overflow: auto; white-space: pre-wrap; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } h1 { padding-right: 0; } .logo { position: static; display: block; margin-left: auto; margin-bottom: 12px; } }
   </style>
 </head>
 <body>
-
-<div class="wrapper">
-  <div class="card">
-
-    <!-- Clickable EuroSDR logo (same place as index) -->
-    <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
-      <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
-    </a>
-
-    <div class="topbar">
-      <div class="left-actions">
-        <a href="index.html">← Back to index</a>
+  <div class="wrapper">
+    <div class="card">
+      <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
+        <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
+      </a>
+      <div class="topbar">
+        <div class="left-actions"><a href="index.html">← Back to index</a></div>
+        <div class="muted" id="metaHint"></div>
       </div>
-      <div class="muted" id="metaHint"></div>
+      <div id="app"><div class="muted">Loading...</div></div>
     </div>
-
-    <div id="app">
-      <div class="muted">Loading...</div>
-    </div>
-
   </div>
-</div>
-
-<script src="models.js"></script>
-<script>
-  // Expected in models.js: window.MODELS = [ { ... } ]
-
-  function esc(s) {
-    return String(s ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  function getId() {
-    return new URLSearchParams(location.search).get("id");
-  }
-
-  function row(label, valueHtml) {
-    return '<div class="label">' + esc(label) + '</div>' +
-           '<div class="value">' + valueHtml + '</div>';
-  }
-
-  function textOrDash(v) {
-    const t = String(v ?? "").trim();
-    if (!t || t.toLowerCase() === "n/a") return '<span class="muted">—</span>';
-    return esc(t);
-  }
-
-  function linkOrDash(url) {
-    const u = String(url ?? "").trim();
-    if (!u || u.toLowerCase() === "n/a") return '<span class="muted">—</span>';
-    return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a>';
-  }
-
-  function show(html) {
-    document.getElementById("app").innerHTML = html;
-  }
-
-  function showError(title, message) {
-    document.title = title;
-    document.getElementById("metaHint").textContent = "";
-    show(
-      '<h1>' + esc(title) + '</h1>' +
-      '<p>' + esc(message) + '</p>' +
-      '<p class="muted">Tip: open <code>index.html</code> and click a model name.</p>'
-    );
-  }
-
-  function renderModel(m) {
-    const title = (m.modelName || m.id || "Model") + " – Detail";
-    document.title = title;
-
-    // Small hint line under topbar, safe even if fields missing
-    const hintParts = [];
-    if (m.id) hintParts.push("ID: " + String(m.id));
-    if (m.organisation) hintParts.push("Organisation: " + String(m.organisation));
-    if (m.modelStatus) hintParts.push("Status: " + String(m.modelStatus));
-    document.getElementById("metaHint").textContent = hintParts.join(" • ");
-
-    // 12-field profile in the requested order:
-    // 1 Model name
-    // 2 Organisation
-    // 3 Model Status
-    // 4 AI task
-    // 5 Input specification
-    // 6 Output specification
-    // 7 Architecture
-    // 8 Training data origin
-    // 9 Primary performance metric
-    // 10 License
-    // 11 Access link
-    // 12 More Information
-
-    show(
-      '<h1>' + esc(m.modelName || "Untitled model") + '</h1>' +
-      '<div class="muted">' +
-        (m.id ? '<span class="badge">' + esc(m.id) + '</span>' : '') +
-        (m.modelStatus ? ' &nbsp;•&nbsp; <span class="badge">' + esc(m.modelStatus) + '</span>' : '') +
-      '</div>' +
-
-      '<div class="grid">' +
-        row("Model name", textOrDash(m.modelName)) +
-        row("Organisation", textOrDash(m.organisation)) +
-        row("Model Status", textOrDash(m.modelStatus)) +
-        row("AI task", textOrDash(m.aiTask)) +
-        row("Input specification", textOrDash(m.inputSpecification)) +
-        row("Output specification", textOrDash(m.outputSpecification)) +
-        row("Architecture", textOrDash(m.architecture)) +
-        row("Training data origin", textOrDash(m.trainingDataOrigin)) +
-        row("Primary performance metric", textOrDash(m.primaryPerformanceMetric)) +
-        row("License", textOrDash(m.license)) +
-        row("Access link", linkOrDash(m.accessLink)) +
-        row("More Information", textOrDash(m.moreInformation)) +
-      '</div>' +
-
-      '<hr />' +
-
-      '<details>' +
-        '<summary style="cursor:pointer;">Show raw JSON</summary>' +
-        '<pre>' + esc(JSON.stringify(m, null, 2)) + '</pre>' +
-      '</details>'
-    );
-  }
-
-  (function main() {
-    try {
-      const id = getId();
-      if (!id) {
-        showError("Not found", "Missing query parameter: ?id=...");
-        return;
-      }
-
-      if (!Array.isArray(window.MODELS)) {
-        showError("Error", "models.js was not loaded, or it does not define window.MODELS.");
-        return;
-      }
-
-      const model = window.MODELS.find(x => String(x.id) === String(id));
-      if (!model) {
-        showError("Not found", 'No model found for id="' + id + '".');
-        return;
-      }
-
-      renderModel(model);
-    } catch (e) {
-      showError("Error", "A script error stopped the page: " + (e && e.message ? e.message : String(e)));
-      console.error(e);
-    }
-  })();
-</script>
-
+  <script src="js/common.js"></script>
+  <script src="data/generated/models.js"></script>
+  <script src="js/data-loader.js"></script>
+  <script src="js/detail.js"></script>
 </body>
 </html>

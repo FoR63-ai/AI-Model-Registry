@@ -4,390 +4,243 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Model Registry</title>
-
   <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      background-color: #f1f7f3; /* soft green */
+    :root {
+      --bg: #f1f7f3;
+      --card: #ffffff;
+      --line: #e7efe9;
+      --muted: #5f6f66;
+      --text: #17211c;
+      --accent: #d9eee0;
+      --accent-hover: #cde5d6;
+      --badge: #eef5f0;
+      --danger: #a12626;
     }
-
-    .wrapper {
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card {
-      background: white;
-      width: 100%;
-      max-width: 1100px;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-      position: relative;
-    }
-
-    /* Clickable top-right logo */
-    .logo {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      height: 65px;
-      width: auto;
-      cursor: pointer;
-    }
-
-    h1 {
-      margin: 0 0 8px 0;
-      padding-right: 130px; /* avoid overlapping logo */
-    }
-
-    .muted {
-      color: #666;
-      font-size: 13px;
-      padding-right: 130px;
-    }
-
-    /* Guidance "board" */
-    .board {
-      margin-top: 18px;
-      padding: 14px 14px;
-      border-radius: 14px;
-      background: #f6fbf7;
-      border: 1px solid #e3efe6;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .board-title {
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .board-text {
-      margin: 2px 0 0 0;
-      color: #666;
-      font-size: 13px;
-      max-width: 720px;
-    }
-
-    .board a { text-decoration: none; }
-
-    .board-btn {
-      padding: 10px 12px;
-      font-size: 14px;
-      border-radius: 10px;
-      border: none;
-      background: #d9eee0;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .board-btn:hover {
-      background: #cde5d6;
-    }
-
-    .filters {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-      align-items: end;
-    }
-
-    label {
-      display: grid;
-      gap: 6px;
-      font-size: 14px;
-    }
-
-    input, select {
-      padding: 8px 10px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid #dcdcdc;
-      min-width: 220px;
-    }
-
-    button {
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: none;
-      background: #d9eee0;
-      cursor: pointer;
-      min-width: 90px;
-    }
-
-    button:hover {
-      background: #cde5d6;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      vertical-align: top;
-    }
-
-    th {
-      font-size: 13px;
-      color: #444;
-      white-space: nowrap;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 8px;
-      background: #eef5f0;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    a {
-      text-decoration: none;
-      color: #2f6f4f;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    code {
-      background: #f6f6f6;
-      padding: 1px 6px;
-      border-radius: 6px;
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .wrapper { padding: 40px 20px; display: flex; justify-content: center; }
+    .card { background: var(--card); width: 100%; max-width: 1180px; padding: 30px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); position: relative; }
+    .logo { position: absolute; top: 20px; right: 25px; height: 65px; width: auto; }
+    h1 { margin: 0 0 8px 0; padding-right: 130px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .board { margin-top: 18px; padding: 14px; border-radius: 14px; background: #f6fbf7; border: 1px solid #e3efe6; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .board-title { font-weight: 600; margin: 0; }
+    .board-text { margin: 2px 0 0 0; color: var(--muted); font-size: 13px; max-width: 760px; }
+    .board-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .filters { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; align-items: end; }
+    label { display: grid; gap: 6px; font-size: 14px; }
+    input, select, textarea { padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid #dcdcdc; background: white; width: 100%; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid #d9eee0; border-color: #b9d7c3; }
+    textarea { min-height: 96px; resize: vertical; }
+    button, .button-link { padding: 10px 14px; font-size: 14px; border-radius: 10px; border: none; background: var(--accent); cursor: pointer; white-space: nowrap; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    button:hover, .button-link:hover { background: var(--accent-hover); text-decoration: none; }
+    button.secondary, .button-link.secondary { background: white; border: 1px solid #dcdcdc; }
+    button.secondary:hover, .button-link.secondary:hover { background: #fafafa; }
+    .pill { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 999px; background: var(--badge); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { font-size: 13px; color: #444; white-space: nowrap; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 8px; background: var(--badge); font-size: 12px; white-space: nowrap; }
+    a { text-decoration: none; color: #2f6f4f; }
+    a:hover { text-decoration: underline; }
+    code, pre { background: #f6f6f6; border-radius: 8px; }
+    code { padding: 1px 6px; }
+    pre { padding: 14px; overflow: auto; font-size: 12px; }
+    .empty { padding: 30px 10px; text-align: center; color: var(--muted); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(17, 26, 20, 0.5); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 999; }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(920px, 100%); max-height: calc(100vh - 40px); overflow: auto; background: white; border-radius: 18px; box-shadow: 0 24px 70px rgba(0,0,0,0.18); }
+    .modal-header, .modal-footer { padding: 18px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .modal-footer { border-bottom: none; border-top: 1px solid var(--line); }
+    .modal-body { padding: 20px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .hint { font-size: 12px; color: var(--muted); }
+    .errors { margin: 0 0 18px 0; padding: 12px 14px; border: 1px solid #f0c9c9; background: #fff5f5; color: var(--danger); border-radius: 12px; display: none; }
+    .errors.open { display: block; }
+    .preview { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #fbfcfb; }
+    .stack { display: flex; gap: 10px; flex-wrap: wrap; }
+    @media (max-width: 760px) {
+      .form-grid { grid-template-columns: 1fr; }
+      h1, .muted { padding-right: 0; }
+      .logo { position: static; display: block; margin-left: auto; margin-bottom: 12px; }
+      th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6) { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="wrapper">
+    <div class="card">
+      <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
+        <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
+      </a>
 
-<div class="wrapper">
-  <div class="card">
+      <h1>AI Model Registry</h1>
+      <div class="muted">Static registry with structured metadata, JSON-based storage, and optional self-submission.</div>
 
-    <!-- Clickable EuroSDR logo -->
-    <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
-      <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
-    </a>
-
-    <h1>AI Model Registry</h1>
-    <div class="muted">
-      Local metadata registry (no server required). Data stored in <code>models.js</code>.
-    </div>
-
-    <!-- Guidance board / panel -->
-    <div class="board">
-      <div>
-        <div class="board-title">Metadata guidance</div>
-        <div class="board-text">
-          How to describe and maintain metadata records (fields, conventions, and examples).
+      <div class="board">
+        <div>
+          <div class="board-title">Metadata guidance</div>
+          <div class="board-text">Describe the model with the same 12 metadata fields already used in the registry. New submissions are validated in the browser before they are exported or sent for review.</div>
+        </div>
+        <div class="board-actions">
+          <a class="button-link secondary" href="metadata-guidance.html">Open guidance</a>
+          <button id="openSubmit">Submit model</button>
         </div>
       </div>
-      <a href="metadata-guidance.html">
-        <button class="board-btn">Open guidance</button>
-      </a>
+
+      <div class="filters">
+        <label>
+          Search
+          <input id="q" placeholder="e.g. Sentinel-2, EPSG:3857, transformer..." />
+        </label>
+
+        <label>
+          Organisation
+          <select id="org"><option value="">All</option></select>
+        </label>
+
+        <label>
+          Model status
+          <select id="status"><option value="">All</option></select>
+        </label>
+
+        <label>
+          Sort
+          <select id="sort">
+            <option value="name_asc">Model name (A–Z)</option>
+            <option value="name_desc">Model name (Z–A)</option>
+            <option value="org_asc">Organisation (A–Z)</option>
+            <option value="org_desc">Organisation (Z–A)</option>
+            <option value="status_asc">Model Status (A–Z)</option>
+            <option value="status_desc">Model Status (Z–A)</option>
+          </select>
+        </label>
+
+        <button id="clear" class="secondary">Clear</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px;">
+        <div class="muted" id="count"></div>
+        <div class="stack">
+          <span class="pill">Stage 1: form + validation</span>
+          <span class="pill">Stage 2: JSON files + build</span>
+          <span class="pill">Stage 3: optional PR automation</span>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Model name</th>
+            <th>Organisation</th>
+            <th>Model status</th>
+            <th>AI task</th>
+            <th>Primary performance metric</th>
+            <th>License</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="emptyState" class="empty" hidden>No models matched your filters.</div>
     </div>
-
-    <div class="filters">
-      <label>
-        Search
-        <input id="q" placeholder="e.g. Sentinel-2, EPSG:3857, transformer..." />
-      </label>
-
-      <label>
-        Organisation
-        <select id="org">
-          <option value="">All</option>
-        </select>
-      </label>
-
-      <label>
-        Model Status
-        <select id="status">
-          <option value="">All</option>
-          <!-- Auto-filled from data -->
-        </select>
-      </label>
-
-      <label>
-        Sort
-        <select id="sort">
-          <option value="name_asc">Model name (A–Z)</option>
-          <option value="name_desc">Model name (Z–A)</option>
-          <option value="org_asc">Organisation (A–Z)</option>
-          <option value="org_desc">Organisation (Z–A)</option>
-          <option value="status_asc">Model Status (A–Z)</option>
-          <option value="status_desc">Model Status (Z–A)</option>
-        </select>
-      </label>
-
-      <button id="clear">Clear</button>
-    </div>
-
-    <div class="muted" id="count" style="margin-top:12px;"></div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Model name</th>
-          <th>Organisation</th>
-          <th>Model Status</th>
-          <th>AI task</th>
-          <th>Primary performance metric</th>
-          <th>License</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-
   </div>
-</div>
 
-<script src="models.js"></script>
-<script>
-  const els = {
-    q: document.getElementById("q"),
-    org: document.getElementById("org"),
-    status: document.getElementById("status"),
-    sort: document.getElementById("sort"),
-    clear: document.getElementById("clear"),
-    count: document.getElementById("count"),
-    rows: document.getElementById("rows"),
-  };
+  <div id="submitModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="submitTitle">
+      <div class="modal-header">
+        <div>
+          <strong id="submitTitle">Submit a new model</strong>
+          <div class="hint">Works immediately on GitHub Pages. Automatic PR creation is enabled only when a serverless submit endpoint is configured.</div>
+        </div>
+        <button id="closeSubmit" class="secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <div id="submitErrors" class="errors"></div>
+        <form id="submitForm">
+          <div class="form-grid">
+            <label>
+              Model name
+              <input name="modelName" required />
+            </label>
+            <label>
+              Organisation
+              <input name="organisation" required />
+            </label>
+            <label>
+              Model status
+              <input name="modelStatus" placeholder="Experimental, Validated, Production ready..." required />
+            </label>
+            <label>
+              AI task
+              <input name="aiTask" required />
+            </label>
+            <label class="full">
+              ID
+              <input name="id" placeholder="auto-generated from organisation + model name" />
+              <div class="hint">Letters, numbers, and hyphens only. Leave blank to generate automatically.</div>
+            </label>
+            <label class="full">
+              Input specification
+              <textarea name="inputSpecification" required></textarea>
+            </label>
+            <label class="full">
+              Output specification
+              <textarea name="outputSpecification" required></textarea>
+            </label>
+            <label class="full">
+              Architecture
+              <textarea name="architecture" required></textarea>
+            </label>
+            <label class="full">
+              Training data origin
+              <textarea name="trainingDataOrigin" required></textarea>
+            </label>
+            <label class="full">
+              Primary performance metric
+              <textarea name="primaryPerformanceMetric" required></textarea>
+            </label>
+            <label>
+              License
+              <input name="license" required />
+            </label>
+            <label>
+              Access link
+              <input name="accessLink" placeholder="https://... or N/A" required />
+            </label>
+            <label class="full">
+              More information
+              <textarea name="moreInformation" required></textarea>
+            </label>
+          </div>
+        </form>
 
-  function normalize(s) {
-    return (s || "").toString().toLowerCase().trim();
-  }
+        <div style="margin-top:18px;" class="preview">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap;">
+            <strong>Preview</strong>
+            <span class="hint">This JSON is what will be exported, sent to GitHub Issues, or posted to the optional automation endpoint.</span>
+          </div>
+          <pre id="submitPreview">{}</pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="stack">
+          <button id="copyJson" type="button" class="secondary">Copy JSON</button>
+          <button id="downloadJson" type="button" class="secondary">Download JSON</button>
+          <a id="openIssue" class="button-link secondary" target="_blank" rel="noopener noreferrer">Open GitHub issue</a>
+        </div>
+        <div class="stack">
+          <button id="submitToApi" type="button">Submit for review</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  function esc(s) {
-    return String(s ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  function buildSearchText(m) {
-    return normalize([
-      m.modelName,
-      m.organisation,
-      m.modelStatus,
-      m.aiTask,
-      m.inputSpecification,
-      m.outputSpecification,
-      m.architecture,
-      m.trainingDataOrigin,
-      m.primaryPerformanceMetric,
-      m.license,
-      m.moreInformation
-    ].filter(Boolean).join(" "));
-  }
-
-  const DATA = (Array.isArray(window.MODELS) ? window.MODELS : []).map(m => ({
-    ...m,
-    __searchText: buildSearchText(m)
-  }));
-
-  function uniqueSorted(arr) {
-    return [...new Set(arr.filter(Boolean).map(x => String(x).trim()).filter(Boolean))]
-      .sort((a,b) => a.localeCompare(b));
-  }
-
-  function populateFilters() {
-    // Organisations
-    uniqueSorted(DATA.map(x => x.organisation)).forEach(o => {
-      const opt = document.createElement("option");
-      opt.value = o;
-      opt.textContent = o;
-      els.org.appendChild(opt);
-    });
-
-    // Model statuses
-    uniqueSorted(DATA.map(x => x.modelStatus)).forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s;
-      opt.textContent = s;
-      els.status.appendChild(opt);
-    });
-  }
-
-  function sortItems(items) {
-    const s = els.sort.value;
-    const by = {
-      name_asc:   (a,b) => (a.modelName||"").localeCompare(b.modelName||""),
-      name_desc:  (a,b) => (b.modelName||"").localeCompare(a.modelName||""),
-      org_asc:    (a,b) => (a.organisation||"").localeCompare(b.organisation||""),
-      org_desc:   (a,b) => (b.organisation||"").localeCompare(a.organisation||""),
-      status_asc: (a,b) => (a.modelStatus||"").localeCompare(b.modelStatus||""),
-      status_desc:(a,b) => (b.modelStatus||"").localeCompare(a.modelStatus||""),
-    }[s] || ((a,b)=>0);
-
-    return items.slice().sort(by);
-  }
-
-  function render() {
-    const q = normalize(els.q.value);
-    const org = els.org.value;
-    const status = els.status.value;
-
-    let items = DATA.filter(m => {
-      if (org && (m.organisation || "") !== org) return false;
-      if (status && (m.modelStatus || "") !== status) return false;
-      if (q && !m.__searchText.includes(q)) return false;
-      return true;
-    });
-
-    items = sortItems(items);
-
-    els.count.textContent = items.length + " model(s)";
-
-    els.rows.innerHTML = items.map(m => `
-      <tr>
-        <td>
-          <a href="detail.html?id=${encodeURIComponent(m.id)}">
-            <strong>${esc(m.modelName || m.id)}</strong>
-          </a>
-          <div class="muted">${esc(m.id || "")}</div>
-        </td>
-        <td>${esc(m.organisation || "")}</td>
-        <td>${m.modelStatus ? `<span class="badge">${esc(m.modelStatus)}</span>` : ""}</td>
-        <td>${esc(m.aiTask || "")}</td>
-        <td>${esc(m.primaryPerformanceMetric || "")}</td>
-        <td>${esc(m.license || "")}</td>
-      </tr>
-    `).join("");
-  }
-
-  function wire() {
-    els.q.addEventListener("input", render);
-    els.org.addEventListener("change", render);
-    els.status.addEventListener("change", render);
-    els.sort.addEventListener("change", render);
-    els.clear.addEventListener("click", () => {
-      els.q.value = "";
-      els.org.value = "";
-      els.status.value = "";
-      els.sort.value = "name_asc";
-      render();
-    });
-  }
-
-  populateFilters();
-  wire();
-  render();
-</script>
-
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="data/generated/models.js"></script>
+  <script src="js/data-loader.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/submit.js"></script>
 </body>
 </html>

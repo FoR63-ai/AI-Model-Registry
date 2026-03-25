@@ -1,0 +1,15 @@
+{
+  "id": "model-007",
+  "modelName": "U-Net Forest and Land Segmentation",
+  "organisation": "Institut Cartogràfic i Geològic de Catalunya (ICGC)",
+  "modelStatus": "Experimental",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "LiDAR data and hyperspectral data are referenced. Exact formats, resolution, CRS, and preprocessing steps are not specified.",
+  "outputSpecification": "Segmented vegetation and land features. Output schema, class ontology, and confidence handling are not specified.",
+  "architecture": "U-Net",
+  "trainingDataOrigin": "Based on ICGC geospatial datasets. Specific dataset names, labeling protocols, and availability are not provided.",
+  "primaryPerformanceMetric": "Not stated in the source.",
+  "license": "Not stated in the source.",
+  "accessLink": "Not stated in the source.",
+  "moreInformation": "Used in projects such as vegetation monitoring and forest segmentation."
+}

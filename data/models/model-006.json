@@ -1,0 +1,15 @@
+{
+  "id": "model-006",
+  "modelName": "Segment Anything for 3D Outdoor Mapping",
+  "organisation": "Cyclomedia",
+  "modelStatus": "Validated",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "Used within 3D mapping workflows. Exact input modalities, formats, CRS, and preprocessing requirements are not specified.",
+  "outputSpecification": "Segmented objects for 3D environment representation. Output structure and class definitions are not specified.",
+  "architecture": "Segment Anything",
+  "trainingDataOrigin": "Not stated in the source.",
+  "primaryPerformanceMetric": "Not stated in the source.",
+  "license": "Not stated in the source.",
+  "accessLink": "Not stated in the source.",
+  "moreInformation": "Used in combination with object detection models to enhance 3D mapping accuracy."
+}

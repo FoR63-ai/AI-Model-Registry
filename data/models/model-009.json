@@ -1,0 +1,15 @@
+{
+  "id": "model-009",
+  "modelName": "SpaCy Named Entity Recognition for Deed Processing",
+  "organisation": "Kadaster",
+  "modelStatus": "Validated",
+  "aiTask": "Named entity recognition",
+  "inputSpecification": "Text from deed documents processed via OCR and preprocessing pipelines. Exact formats, languages, and schema requirements are not specified.",
+  "outputSpecification": "Extracted structured entities from legal text. Entity schema, output format, and confidence scores are not specified.",
+  "architecture": "SpaCy with custom labels and additional training data",
+  "trainingDataOrigin": "Custom labeled training data for cadastral documents. Dataset details and availability are not specified.",
+  "primaryPerformanceMetric": "Not stated in the source.",
+  "license": "Not stated in the source.",
+  "accessLink": "Not stated in the source.",
+  "moreInformation": "Supports deed registration workflows; a future goal mentioned in the source is automated parcel signaling."
+}

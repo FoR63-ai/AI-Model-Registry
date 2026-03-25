@@ -1,0 +1,9 @@
+{
+  "name": "ai-model-registry",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-models.mjs",
+    "validate": "node scripts/validate-models.mjs"
+  }
+}

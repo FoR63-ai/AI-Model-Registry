@@ -1,0 +1,15 @@
+{
+  "id": "model-008",
+  "modelName": "Mask R-CNN for Topographic Feature Detection",
+  "organisation": "Estonian Land Board",
+  "modelStatus": "Validated",
+  "aiTask": "Object detection",
+  "inputSpecification": "Orthophotos, ALS derivatives, and vector data are used. Exact formats, schemas, CRS, and preprocessing requirements are not specified.",
+  "outputSpecification": "Detected features such as buildings, solar parks, roads, and water bodies. Output schema and confidence representation are not specified.",
+  "architecture": "Mask R-CNN",
+  "trainingDataOrigin": "Derived from Estonian topographic datasets. Dataset names, temporal scope, and availability are not specified.",
+  "primaryPerformanceMetric": "Precision improvements are reported, but no quantitative metrics are provided.",
+  "license": "Not stated in the source.",
+  "accessLink": "Not stated in the source.",
+  "moreInformation": "Used for updating the Estonian Topographic Database (ETAK)."
+}

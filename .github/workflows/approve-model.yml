@@ -1,0 +1,143 @@
+# .github/workflows/approve-model.yml
+#
+# Workflow: Auto-add model to models.js when a maintainer labels an issue "approved"
+#
+# How it works:
+#   1. Someone creates an issue via the submission form (contains a JSON code block)
+#   2. A maintainer reviews the issue and adds the label "approved"
+#   3. This workflow triggers, parses the JSON from the issue body,
+#      appends the new model to models.js, commits, and closes the issue.
+#
+# Prerequisites:
+#   - Create a label called "approved" in your repo (Settings → Labels)
+#   - models.js must export an array like: const defined_models = [ ... ];
+#   - Issues must contain a single ```json ... ``` code block with model metadata
+
+name: Approve Model Submission
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  add-model:
+    # Only run when the "approved" label is added
+    if: github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Parse issue and update models.js
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // ── 1. Extract JSON from the issue body ──────────────────────
+            const body = context.payload.issue.body || '';
+            const jsonMatch = body.match(/```(?:json)?\s*\n([\s\S]*?)\n\s*```/);
+
+            if (!jsonMatch) {
+              core.setFailed('Could not find a JSON code block in the issue body.');
+              return;
+            }
+
+            let newModel;
+            try {
+              newModel = JSON.parse(jsonMatch[1].trim());
+            } catch (e) {
+              core.setFailed(`Invalid JSON in issue body: ${e.message}`);
+              return;
+            }
+
+            // Basic validation — require at least an id and modelName
+            if (!newModel.id || !newModel.modelName) {
+              core.setFailed('JSON must contain at least "id" and "modelName" fields.');
+              return;
+            }
+
+            core.info(`Parsed model: ${newModel.modelName} (${newModel.id})`);
+
+            // ── 2. Read and update models.js ─────────────────────────────
+            const filePath = 'models.js';
+            let content = fs.readFileSync(filePath, 'utf8');
+
+            // Check for duplicate id
+            if (content.includes(`"${newModel.id}"`)) {
+              core.setFailed(`A model with id "${newModel.id}" already exists in ${filePath}.`);
+              return;
+            }
+
+            // Strategy: find the last closing `}` before the final `];`
+            // and insert the new model after it with a comma.
+            //
+            // This handles both:
+            //   const defined_models = [ { ... }, { ... } ];
+            //   const defined_models = [ { ... } ];
+
+            const prettyJson = JSON.stringify(newModel, null, 2);
+            // Indent to match the existing style (2 spaces)
+            const indented = prettyJson
+              .split('\n')
+              .map(line => '  ' + line)
+              .join('\n');
+
+            // Find the position of the final `];` to insert before it
+            const closingBracketIndex = content.lastIndexOf('];');
+            if (closingBracketIndex === -1) {
+              core.setFailed('Could not find the closing "];" in models.js. Is the file format correct?');
+              return;
+            }
+
+            // Check if there are already models in the array (look for a `}` before `];`)
+            const beforeBracket = content.substring(0, closingBracketIndex).trimEnd();
+            const needsComma = beforeBracket.endsWith('}');
+
+            const insertion = (needsComma ? ',\n' : '\n') + indented + '\n';
+            content = content.substring(0, closingBracketIndex) + insertion + content.substring(closingBracketIndex);
+
+            fs.writeFileSync(filePath, content, 'utf8');
+            core.info(`Updated ${filePath} with new model.`);
+
+            // ── 3. Export values for later steps ─────────────────────────
+            core.exportVariable('MODEL_NAME', newModel.modelName);
+            core.exportVariable('ISSUE_NUMBER', context.payload.issue.number);
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add models.js
+          git commit -m "Add model: ${MODEL_NAME} (closes #${ISSUE_NUMBER})"
+          git push
+
+      - name: Close the issue with a comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.payload.issue.number;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `✅ **Model approved and added!**\n\nThe model **${process.env.MODEL_NAME}** has been added to the registry.\n\nThe change will be live on the site shortly after the GitHub Pages deployment completes.`
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              state: 'closed'
+            });

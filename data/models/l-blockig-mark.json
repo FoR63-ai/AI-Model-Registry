@@ -1,0 +1,15 @@
+{
+  "id": "l-blockig-mark",
+  "modelName": "Blockig mark",
+  "organisation": "Lantmäteriet",
+  "modelStatus": "Experimental",
+  "aiTask": "Object detection",
+  "inputSpecification": "N/A",
+  "outputSpecification": "N/A",
+  "architecture": "N/A",
+  "trainingDataOrigin": "N/A",
+  "primaryPerformanceMetric": "N/A",
+  "license": "N/A",
+  "accessLink": "N/A",
+  "moreInformation": "N/A"
+}

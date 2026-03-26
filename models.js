@@ -142,4 +142,20 @@ window.MODELS = [
     accessLink: "Not stated in the source.",
     moreInformation: "Used for transport network maintenance and cartographic updates."
   }
+,
+  {
+    "id": "lantmateriet-lantmateriet-bergidagen",
+    "modelName": "Lantmäteriet bergidagen",
+    "organisation": "Lantmäteriet",
+    "modelStatus": "Experimental",
+    "aiTask": "Berg",
+    "inputSpecification": "ORto",
+    "outputSpecification": "Raster",
+    "architecture": "Segformer",
+    "trainingDataOrigin": "Sweden",
+    "primaryPerformanceMetric": "85%",
+    "license": "",
+    "accessLink": "",
+    "moreInformation": ""
+  }
 ];

@@ -153,8 +153,8 @@ window.MODELS = [
     architecture: "Segformer",
     trainingDataOrigin: "Sweden",
     primaryPerformanceMetric: "85%",
-    license: "",
-    accessLink: "",
-    moreInformation: ""
+    license: "N/A",
+    accessLink: "N/A",
+    moreInformation: "N/A"
   }
 ];

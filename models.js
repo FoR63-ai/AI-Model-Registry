@@ -143,7 +143,7 @@ window.MODELS = [
     moreInformation: "Used for transport network maintenance and cartographic updates."
   },
   {
-    id: "lantmateriet-lantmateriet-bergidagen",
+    id: "model-011",
     modelName: "Lantmäteriet bergidagen",
     organisation: "Lantmäteriet",
     modelStatus: "Experimental",

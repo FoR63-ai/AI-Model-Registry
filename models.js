@@ -141,8 +141,7 @@ window.MODELS = [
     license: "Not stated in the source.",
     accessLink: "Not stated in the source.",
     moreInformation: "Used for transport network maintenance and cartographic updates."
-  }
-,
+  },
   {
     "id": "lantmateriet-lantmateriet-bergidagen",
     "modelName": "Lantmäteriet bergidagen",

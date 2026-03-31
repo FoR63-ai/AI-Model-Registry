@@ -1,23 +1,3 @@
-# .github/workflows/approve-model.yml
-#
-# Workflow: Auto-add or update models when a maintainer labels an issue
-#
-# Architecture:
-#   - Source of truth: individual JSON files in data/models/<id>.json
-#   - Build step: `npm run build` reads data/models/*.json → generates data/generated/models.js
-#   - The website (index.html) loads data/generated/models.js
-#
-# How it works:
-#   1. Someone creates an issue with a JSON code block containing model metadata
-#   2. A maintainer reviews and adds a label:
-#      - "approved"         → creates a NEW JSON file (fails if file already exists)
-#      - "update-approved"  → REPLACES an existing JSON file (fails if file not found)
-#   3. This workflow writes the JSON file, runs the build, commits everything, and closes the issue.
-#
-# Prerequisites:
-#   - Create labels "approved" and "update-approved" in your repo (Settings → Labels)
-#   - Issues must contain a single ```json ... ``` code block with model metadata
-
 name: Approve Model Submission
 
 on:
@@ -53,8 +33,6 @@ jobs:
             const action = isUpdate ? 'update' : 'add';
             core.info(`Mode: ${action}`);
 
-            const isUpdate = context.payload.label.name === 'update-approved';
-            const action = isUpdate ? 'update' : 'add';
             const body = context.payload.issue.body || '';
             const match = body.match(/```(?:json)?\s*\n([\s\S]*?)\n\s*```/);
 
@@ -65,7 +43,7 @@ jobs:
 
             let model;
             try {
-              model = JSON.parse(jsonMatch[1].trim());
+              model = JSON.parse(match[1].trim());
             } catch (e) {
               core.setFailed(`Invalid JSON in issue body: ${e.message}`);
               return;
@@ -78,7 +56,6 @@ jobs:
 
             core.info(`Parsed model: ${model.modelName} (${model.id})`);
 
-            // ── 2. Write individual JSON file to data/models/ ────────────
             const modelsDir = 'data/models';
             const filePath = path.join(modelsDir, `${model.id}.json`);
             const fileExists = fs.existsSync(filePath);
@@ -93,27 +70,28 @@ jobs:
               return;
             }
 
-            // Ensure directory exists
             fs.mkdirSync(modelsDir, { recursive: true });
-
-            // Write the individual JSON file (pretty-printed)
             fs.writeFileSync(filePath, JSON.stringify(model, null, 2) + '\n', 'utf8');
+
             core.info(`Wrote ${filePath}`);
 
-            // ── 3. Export values for later steps ─────────────────────────
             core.exportVariable('MODEL_NAME', model.modelName);
             core.exportVariable('MODEL_ID', model.id);
-            core.exportVariable('ISSUE_NUMBER', context.payload.issue.number);
+            core.exportVariable('ISSUE_NUMBER', String(context.payload.issue.number));
             core.exportVariable('ACTION', action);
 
-      - name: Run build to regenerate data/generated/models.js
-        run: npm run build
+      - name: Validate models
+        run: npm run validate
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/models/ data/generated/
+          git add data/models/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
           if [ "$ACTION" = "update" ]; then
             git commit -m "Update model: ${MODEL_NAME} (closes #${ISSUE_NUMBER})"
           else
@@ -123,12 +101,14 @@ jobs:
 
       - name: Comment and close issue
         uses: actions/github-script@v7
+        env:
+          ACTION: ${{ env.ACTION }}
+          MODEL_NAME: ${{ env.MODEL_NAME }}
         with:
           script: |
             const issueNumber = context.payload.issue.number;
             const action = process.env.ACTION;
             const modelName = process.env.MODEL_NAME;
-
             const verb = action === 'update' ? 'updated in' : 'added to';
             const emoji = action === 'update' ? '✏️' : '✅';
 
@@ -136,7 +116,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: `${emoji} **Model ${action === 'update' ? 'updated' : 'approved and added'}!**\n\nThe model **${modelName}** has been ${verb} the registry.\n\nThe change will be live on the site shortly after the GitHub Pages deployment completes.`
+              body: `${emoji} **Model ${action === 'update' ? 'updated' : 'approved and added'}!**\n\nThe model **${modelName}** has been ${verb} the registry.`
             });
 
             await github.rest.issues.update({

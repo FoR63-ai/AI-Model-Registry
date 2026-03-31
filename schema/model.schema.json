@@ -1,9 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://for63-ai.github.io/AI-Model-Registry/schema/model.schema.json",
-  "title": "AI Model Registry entry",
   "type": "object",
-  "additionalProperties": false,
   "required": [
     "id",
     "modelName",
@@ -20,57 +17,19 @@
     "moreInformation"
   ],
   "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "modelName": {
-      "type": "string",
-      "minLength": 1
-    },
-    "organisation": {
-      "type": "string",
-      "minLength": 1
-    },
-    "modelStatus": {
-      "type": "string",
-      "minLength": 1
-    },
-    "aiTask": {
-      "type": "string",
-      "minLength": 1
-    },
-    "inputSpecification": {
-      "type": "string",
-      "minLength": 1
-    },
-    "outputSpecification": {
-      "type": "string",
-      "minLength": 1
-    },
-    "architecture": {
-      "type": "string",
-      "minLength": 1
-    },
-    "trainingDataOrigin": {
-      "type": "string",
-      "minLength": 1
-    },
-    "primaryPerformanceMetric": {
-      "type": "string",
-      "minLength": 1
-    },
-    "license": {
-      "type": "string",
-      "minLength": 1
-    },
-    "accessLink": {
-      "type": "string",
-      "minLength": 1
-    },
-    "moreInformation": {
-      "type": "string",
-      "minLength": 1
-    }
-  }
+    "id": { "type": "string" },
+    "modelName": { "type": "string" },
+    "organisation": { "type": "string" },
+    "modelStatus": { "type": "string" },
+    "aiTask": { "type": "string" },
+    "inputSpecification": { "type": "string" },
+    "outputSpecification": { "type": "string" },
+    "architecture": { "type": "string" },
+    "trainingDataOrigin": { "type": "string" },
+    "primaryPerformanceMetric": { "type": "string" },
+    "license": { "type": "string" },
+    "accessLink": { "type": "string" },
+    "moreInformation": { "type": "string" }
+  },
+  "additionalProperties": false
 }

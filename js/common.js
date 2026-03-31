@@ -57,29 +57,25 @@ window.ModelRegistryUtils = (function () {
   function toModelId(modelName, organisation) {
     const org = slugify(organisation).slice(0, 24);
     const name = slugify(modelName).slice(0, 48);
-    const joined = [org, name].filter(Boolean).join('-');
-    return joined || `model-${Date.now()}`;
+    return [org, name].filter(Boolean).join('-') || `model-${Date.now()}`;
   }
 
   function validateModel(payload, existingModels) {
     const errors = [];
     const data = {};
-    const seenIds = new Set((existingModels || []).map((m) => String(m.id || '').trim()).filter(Boolean));
+    const seenIds = new Set((existingModels || []).map((model) => String(model.id || '').trim()).filter(Boolean));
 
     for (const field of FIELD_ORDER) {
-      const value = String(payload?.[field] ?? '').trim();
-      data[field] = value;
-      if (!value) {
-        errors.push(`${FIELD_LABELS[field]} is required.`);
-      }
-    }
-
-    if (data.accessLink && !/^https?:\/\//i.test(data.accessLink) && data.accessLink.toLowerCase() !== 'n/a') {
-      errors.push('Access link must start with http:// or https://, or be N/A.');
+      data[field] = String(payload?.[field] ?? '').trim();
+      if (!data[field]) errors.push(`${FIELD_LABELS[field]} is required.`);
     }
 
     if (!data.id && data.modelName && data.organisation) {
       data.id = toModelId(data.modelName, data.organisation);
+    }
+
+    if (data.accessLink && !/^https?:\/\//i.test(data.accessLink) && data.accessLink.toLowerCase() !== 'n/a') {
+      errors.push('Access link must start with http:// or https://, or be N/A.');
     }
 
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(data.id || '')) {
@@ -110,20 +106,19 @@ window.ModelRegistryUtils = (function () {
   }
 
   function uniqueSorted(values) {
-    return [...new Set(values.map((v) => String(v ?? '').trim()).filter(Boolean))]
+    return [...new Set(values.map((value) => String(value ?? '').trim()).filter(Boolean))]
       .sort((a, b) => a.localeCompare(b));
   }
 
   function textOrDash(value) {
     const text = String(value ?? '').trim();
-    if (!text || text.toLowerCase() === 'n/a') return '<span class="muted">—</span>';
-    return esc(text);
+    return !text || text.toLowerCase() === 'n/a' ? '—' : esc(text);
   }
 
   function linkOrDash(value) {
     const text = String(value ?? '').trim();
-    if (!text || text.toLowerCase() === 'n/a') return '<span class="muted">—</span>';
-    return `<a href="${esc(text)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>`;
+    if (!text || text.toLowerCase() === 'n/a') return '—';
+    return `<a href="${esc(text)}" target="_blank" rel="noopener">${esc(text)}</a>`;
   }
 
   function downloadJson(filename, data) {
@@ -142,11 +137,11 @@ window.ModelRegistryUtils = (function () {
 
   function githubIssueUrl(model, config) {
     const labels = encodeURIComponent((config.issueLabels || []).join(','));
-    const title = encodeURIComponent(`Model submission: ${model.modelName}`);
+    const title = encodeURIComponent(`Model submission: ${model.modelName || model.id || 'new model'}`);
     const body = encodeURIComponent([
       '## Proposed model submission',
       '',
-      'Please review the following model metadata.',
+      'Please add the following file to data/models/',
       '',
       '```json',
       JSON.stringify(model, null, 2),

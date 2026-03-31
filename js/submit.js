@@ -19,32 +19,23 @@
     preview: document.getElementById('submitPreview'),
     copyJson: document.getElementById('copyJson'),
     downloadJson: document.getElementById('downloadJson'),
-    openIssue: document.getElementById('openIssue'),
-    submitToApi: document.getElementById('submitToApi')
+    openIssue: document.getElementById('openIssue')
   };
 
-  function openModal() {
-    els.modal.classList.add('open');
-    els.modal.setAttribute('aria-hidden', 'false');
-    syncPreview();
-  }
-
-  function closeModal() {
-    els.modal.classList.remove('open');
-    els.modal.setAttribute('aria-hidden', 'true');
-  }
-
   function getPayload() {
-    const formData = new FormData(els.form);
     const payload = {};
+    const formData = new FormData(els.form);
+
     FIELD_ORDER.forEach((field) => {
       payload[field] = String(formData.get(field) || '').trim();
     });
+
     if (!payload.id && payload.modelName && payload.organisation) {
       payload.id = toModelId(payload.modelName, payload.organisation);
       const idInput = els.form.querySelector('[name="id"]');
       if (idInput) idInput.value = payload.id;
     }
+
     return payload;
   }
 
@@ -54,6 +45,7 @@
       els.errors.innerHTML = '';
       return;
     }
+
     els.errors.classList.add('open');
     els.errors.innerHTML = `<strong>Please fix the following:</strong><ul>${errors.map((error) => `<li>${esc(error)}</li>`).join('')}</ul>`;
   }
@@ -66,60 +58,42 @@
     return validation;
   }
 
-  async function submitToApi() {
-    const validation = syncPreview();
-    if (!validation.valid) return;
+  function openModal() {
+    els.modal.showModal();
+    syncPreview();
+  }
 
-    if (!config.submitEndpoint) {
-      renderErrors(['Automatic submission is not enabled yet. Either configure window.REGISTRY_CONFIG.submitEndpoint or use “Open GitHub issue”.']);
-      return;
-    }
-
-    els.submitToApi.disabled = true;
-    els.submitToApi.textContent = 'Submitting...';
-    try {
-      const response = await fetch(config.submitEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validation.data)
-      });
-
-      const body = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(body.error || `Submission failed with status ${response.status}`);
-      }
-
-      renderErrors([]);
-      alert('Submission received. A pull request should now be open for review.');
-      closeModal();
-      els.form.reset();
-      syncPreview();
-    } catch (error) {
-      renderErrors([error.message || String(error)]);
-    } finally {
-      els.submitToApi.disabled = false;
-      els.submitToApi.textContent = 'Submit for review';
-    }
+  function closeModal() {
+    els.modal.close();
   }
 
   els.open?.addEventListener('click', openModal);
   els.close?.addEventListener('click', closeModal);
   els.modal?.addEventListener('click', (event) => {
-    if (event.target === els.modal) closeModal();
+    const rect = els.modal.getBoundingClientRect();
+    const inside = (
+      event.clientX >= rect.left &&
+      event.clientX <= rect.right &&
+      event.clientY >= rect.top &&
+      event.clientY <= rect.bottom
+    );
+    if (!inside) closeModal();
   });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && els.modal.classList.contains('open')) closeModal();
-  });
+
   els.form?.addEventListener('input', syncPreview);
   els.form?.addEventListener('submit', (event) => event.preventDefault());
+
   els.copyJson?.addEventListener('click', async () => {
     const validation = syncPreview();
+    if (!validation.valid) return;
     await copyText(JSON.stringify(validation.data, null, 2));
   });
+
   els.downloadJson?.addEventListener('click', () => {
     const validation = syncPreview();
-    downloadJson(`${validation.data.id || 'model-submission'}.json`, validation.data);
+    if (!validation.valid) return;
+    downloadJson(`${validation.data.id || 'model'}.json`, validation.data);
   });
-  els.submitToApi?.addEventListener('click', submitToApi);
+
   syncPreview();
 })();

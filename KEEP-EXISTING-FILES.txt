@@ -1,1 +1,0 @@
-Keep these existing repo files from your current repository: EuroSDR.png and metadata-guidance.html.

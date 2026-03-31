@@ -1,19 +1,3 @@
-# .github/workflows/approve-model.yml
-#
-# Workflow: Auto-add or update models in models.js when a maintainer labels an issue
-#
-# How it works:
-#   1. Someone creates an issue with a JSON code block containing model metadata
-#   2. A maintainer reviews and adds a label:
-#      - "approved"         → adds a NEW model (fails if id already exists)
-#      - "update-approved"  → REPLACES an existing model (fails if id not found)
-#   3. This workflow parses the JSON, updates models.js, commits, and closes the issue.
-#
-# Prerequisites:
-#   - Create labels "approved" and "update-approved" in your repo (Settings → Labels)
-#   - models.js must export an array like: const defined_models = [ ... ];
-#   - Issues must contain a single ```json ... ``` code block with model metadata
-
 name: Approve Model Submission
 
 on:
@@ -38,127 +22,117 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Parse issue and update models.js
+      - name: Parse issue and write model file
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            const path = require('path');
 
             const isUpdate = context.payload.label.name === 'update-approved';
             const action = isUpdate ? 'update' : 'add';
-            core.info(`Mode: ${action}`);
-
-            // ── 1. Extract JSON from the issue body ──────────────────────
             const body = context.payload.issue.body || '';
-            const jsonMatch = body.match(/```(?:json)?\s*\n([\s\S]*?)\n\s*```/);
+            const match = body.match(/```(?:json)?\s*\n([\s\S]*?)\n\s*```/);
 
-            if (!jsonMatch) {
+            if (!match) {
               core.setFailed('Could not find a JSON code block in the issue body.');
               return;
             }
 
             let model;
             try {
-              model = JSON.parse(jsonMatch[1].trim());
-            } catch (e) {
-              core.setFailed(`Invalid JSON in issue body: ${e.message}`);
+              model = JSON.parse(match[1].trim());
+            } catch (error) {
+              core.setFailed(`Invalid JSON in issue body: ${error.message}`);
               return;
             }
 
-            if (!model.id || !model.modelName) {
-              core.setFailed('JSON must contain at least "id" and "modelName" fields.');
-              return;
-            }
+            const required = [
+              'id',
+              'modelName',
+              'organisation',
+              'modelStatus',
+              'aiTask',
+              'inputSpecification',
+              'outputSpecification',
+              'architecture',
+              'trainingDataOrigin',
+              'primaryPerformanceMetric',
+              'license',
+              'accessLink',
+              'moreInformation'
+            ];
 
-            core.info(`Parsed model: ${model.modelName} (${model.id})`);
-
-            // ── 2. Read models.js and parse the array ────────────────────
-            const filePath = 'models.js';
-            let content = fs.readFileSync(filePath, 'utf8');
-
-            // Extract the array portion between [ and ];
-            const arrayStart = content.indexOf('[');
-            const arrayEnd = content.lastIndexOf('];');
-            if (arrayStart === -1 || arrayEnd === -1) {
-              core.setFailed('Could not find the model array in models.js.');
-              return;
-            }
-
-            const prefix = content.substring(0, arrayStart + 1);
-            const suffix = content.substring(arrayEnd);
-            const arrayContent = content.substring(arrayStart, arrayEnd + 1);
-
-            // Parse existing models by evaluating the array
-            // (safe here since we control the file contents)
-            let models;
-            try {
-              models = eval(arrayContent);
-            } catch (e) {
-              core.setFailed(`Could not parse models array: ${e.message}`);
-              return;
-            }
-
-            const existingIndex = models.findIndex(m => m.id === model.id);
-
-            // ── 3. Add or update ─────────────────────────────────────────
-            if (isUpdate) {
-              if (existingIndex === -1) {
-                core.setFailed(`Cannot update: no model with id "${model.id}" found in ${filePath}.`);
+            for (const field of required) {
+              if (typeof model[field] !== 'string' || !model[field].trim()) {
+                core.setFailed(`Missing or empty required field: ${field}`);
                 return;
               }
-              models[existingIndex] = model;
-              core.info(`Replaced model at index ${existingIndex}.`);
-            } else {
-              if (existingIndex !== -1) {
-                core.setFailed(`Cannot add: a model with id "${model.id}" already exists. Use "update-approved" label instead.`);
-                return;
-              }
-              models.push(model);
-              core.info(`Appended new model (total: ${models.length}).`);
             }
 
-            // ── 4. Write back models.js ──────────────────────────────────
-            const modelsJson = models
-              .map(m => '  ' + JSON.stringify(m, null, 2).split('\n').join('\n  '))
-              .join(',\n');
+            if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(model.id)) {
+              core.setFailed('Invalid id. Use only letters, numbers, and hyphens.');
+              return;
+            }
 
-            const newContent = prefix + '\n' + modelsJson + '\n' + suffix;
-            fs.writeFileSync(filePath, newContent, 'utf8');
-            core.info(`Wrote updated ${filePath}.`);
+            if (!/^https?:\/\//i.test(model.accessLink) && model.accessLink.toLowerCase() !== 'n/a') {
+              core.setFailed('accessLink must start with http:// or https://, or be N/A.');
+              return;
+            }
 
-            // ── 5. Export values for later steps ─────────────────────────
+            const modelsDir = path.join(process.cwd(), 'data', 'models');
+            const filePath = path.join(modelsDir, `${model.id}.json`);
+            const exists = fs.existsSync(filePath);
+
+            if (isUpdate && !exists) {
+              core.setFailed(`Cannot update: ${filePath} does not exist.`);
+              return;
+            }
+
+            if (!isUpdate && exists) {
+              core.setFailed(`Cannot add: ${filePath} already exists. Use the update-approved label instead.`);
+              return;
+            }
+
+            fs.mkdirSync(modelsDir, { recursive: true });
+            fs.writeFileSync(filePath, JSON.stringify(model, null, 2) + '\n', 'utf8');
+
+            core.exportVariable('MODEL_ID', model.id);
             core.exportVariable('MODEL_NAME', model.modelName);
-            core.exportVariable('ISSUE_NUMBER', context.payload.issue.number);
-            core.exportVariable('ACTION', action);
+            core.exportVariable('ACTION_KIND', action);
+            core.exportVariable('ISSUE_NUMBER', String(context.payload.issue.number));
+
+      - name: Validate model files
+        run: npm run validate
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add models.js
-          if [ "$ACTION" = "update" ]; then
+          git add data/models/
+          if [ "$ACTION_KIND" = "update" ]; then
             git commit -m "Update model: ${MODEL_NAME} (closes #${ISSUE_NUMBER})"
           else
             git commit -m "Add model: ${MODEL_NAME} (closes #${ISSUE_NUMBER})"
           fi
           git push
 
-      - name: Close the issue with a comment
+      - name: Comment and close issue
         uses: actions/github-script@v7
         with:
           script: |
-            const issueNumber = context.payload.issue.number;
-            const action = process.env.ACTION;
+            const actionKind = process.env.ACTION_KIND;
             const modelName = process.env.MODEL_NAME;
-
-            const verb = action === 'update' ? 'updated in' : 'added to';
-            const emoji = action === 'update' ? '✏️' : '✅';
+            const issueNumber = Number(process.env.ISSUE_NUMBER);
+            const message = actionKind === 'update'
+              ? `✏️ **Model updated.**\n\nThe model **${modelName}** has been written to \`data/models/\` and the issue is now closed.`
+              : `✅ **Model approved and added.**\n\nThe model **${modelName}** has been written to \`data/models/\` and the issue is now closed.`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: `${emoji} **Model ${action === 'update' ? 'updated' : 'approved and added'}!**\n\nThe model **${modelName}** has been ${verb} the registry.\n\nThe change will be live on the site shortly after the GitHub Pages deployment completes.`
+              body: message
             });
 
             await github.rest.issues.update({

@@ -1,0 +1,13 @@
+Delete these files and folders from the current repository:
+
+- data/generated/
+- scripts/build-models.mjs
+- api/submit-model.js
+- models.js
+
+Replace the existing workflow with the one in this bundle:
+- .github/workflows/approve-model.yml
+
+Optional cleanup if you no longer need historical migration notes:
+- README-upgrade.md
+- KEEP-EXISTING-FILES.txt

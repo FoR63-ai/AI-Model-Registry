@@ -94,12 +94,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      font-family: inherit;
     }
 
     .board-btn:hover,
     button:hover,
     .button-link:hover {
       background: #cde5d6;
+      text-decoration: none;
     }
 
     .button-link.ghost,
@@ -139,6 +141,7 @@
       width: 100%;
       font: inherit;
       background: #fff;
+      box-sizing: border-box;
     }
 
     textarea {
@@ -150,6 +153,7 @@
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     table {
@@ -206,6 +210,7 @@
       padding: 0;
       background: transparent;
       width: min(980px, calc(100vw - 24px));
+      max-width: 980px;
     }
 
     dialog::backdrop {
@@ -239,6 +244,8 @@
       overflow: auto;
       border: 1px solid #e5e7eb;
       font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .error-box {
@@ -254,6 +261,11 @@
 
     .error-box.open {
       display: block;
+    }
+
+    .error-box ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
     }
 
     @media (max-width: 760px) {
@@ -378,19 +390,96 @@
 
     <form id="submitForm">
       <div class="grid">
-        <div class="field"><label>Model name <input name="modelName" required /></label></div>
-        <div class="field"><label>Organisation <input name="organisation" required /></label></div>
-        <div class="field"><label>Model status <input name="modelStatus" required /></label></div>
-        <div class="field"><label>AI task <input name="aiTask" required /></label></div>
-        <div class="field full"><label>ID <input name="id" placeholder="Leave blank to generate automatically" /></label></div>
-        <div class="field full"><label>Input specification <textarea name="inputSpecification" required></textarea></label></div>
-        <div class="field full"><label>Output specification <textarea name="outputSpecification" required></textarea></label></div>
-        <div class="field"><label>Architecture <input name="architecture" required /></label></div>
-        <div class="field"><label>Training data origin <input name="trainingDataOrigin" required /></label></div>
-        <div class="field"><label>Primary performance metric <input name="primaryPerformanceMetric" required /></label></div>
-        <div class="field"><label>License <input name="license" required /></label></div>
-        <div class="field"><label>Access link <input name="accessLink" required /></label></div>
-        <div class="field full"><label>More information <textarea name="moreInformation" required></textarea></label></div>
+        <div class="field">
+          <label>
+            Model name *
+            <input name="modelName" required />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Organisation *
+            <input name="organisation" required />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Model status
+            <input name="modelStatus" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            AI task *
+            <input name="aiTask" required />
+          </label>
+        </div>
+
+        <div class="field full">
+          <label>
+            ID
+            <input name="id" placeholder="Leave blank to generate automatically" />
+          </label>
+        </div>
+
+        <div class="field full">
+          <label>
+            Input specification
+            <textarea name="inputSpecification"></textarea>
+          </label>
+        </div>
+
+        <div class="field full">
+          <label>
+            Output specification
+            <textarea name="outputSpecification"></textarea>
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Architecture
+            <input name="architecture" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Training data origin
+            <input name="trainingDataOrigin" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Primary performance metric
+            <input name="primaryPerformanceMetric" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            License
+            <input name="license" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label>
+            Access link
+            <input name="accessLink" />
+          </label>
+        </div>
+
+        <div class="field full">
+          <label>
+            More information
+            <textarea name="moreInformation"></textarea>
+          </label>
+        </div>
       </div>
     </form>
 

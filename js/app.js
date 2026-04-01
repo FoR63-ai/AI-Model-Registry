@@ -1,115 +1,194 @@
-(async function () {
-  const { esc, normalize, buildSearchText, uniqueSorted } = window.ModelRegistryUtils;
-  const els = {
-    q: document.getElementById('q'),
-    org: document.getElementById('org'),
-    status: document.getElementById('status'),
-    sort: document.getElementById('sort'),
-    clear: document.getElementById('clear'),
-    count: document.getElementById('count'),
-    rows: document.getElementById('rows'),
-    emptyState: document.getElementById('emptyState')
+window.ModelRegistryUtils = (function () {
+  const FIELD_ORDER = [
+    'id',
+    'modelName',
+    'organisation',
+    'modelStatus',
+    'aiTask',
+    'inputSpecification',
+    'outputSpecification',
+    'architecture',
+    'trainingDataOrigin',
+    'primaryPerformanceMetric',
+    'license',
+    'accessLink',
+    'moreInformation'
+  ];
+
+  const FIELD_LABELS = {
+    id: 'ID',
+    modelName: 'Model name',
+    organisation: 'Organisation',
+    modelStatus: 'Model status',
+    aiTask: 'AI task',
+    inputSpecification: 'Input specification',
+    outputSpecification: 'Output specification',
+    architecture: 'Architecture',
+    trainingDataOrigin: 'Training data origin',
+    primaryPerformanceMetric: 'Primary performance metric',
+    license: 'License',
+    accessLink: 'Access link',
+    moreInformation: 'More information'
   };
 
-  function sortItems(items) {
-    const sorters = {
-      name_asc: (a, b) => (a.modelName || '').localeCompare(b.modelName || ''),
-      name_desc: (a, b) => (b.modelName || '').localeCompare(a.modelName || ''),
-      org_asc: (a, b) => (a.organisation || '').localeCompare(b.organisation || ''),
-      org_desc: (a, b) => (b.organisation || '').localeCompare(a.organisation || ''),
-      status_asc: (a, b) => (a.modelStatus || '').localeCompare(b.modelStatus || ''),
-      status_desc: (a, b) => (b.modelStatus || '').localeCompare(a.modelStatus || '')
-    };
-    const sorter = sorters[els.sort.value] || sorters.name_asc;
-    return items.slice().sort(sorter);
+  const REQUIRED_FIELDS = ['modelName', 'organisation', 'aiTask'];
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
-  function resetFilterOptions(select, label) {
-    select.innerHTML = '';
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = label;
-    select.appendChild(option);
+  function normalize(value) {
+    return String(value ?? '').toLowerCase().trim();
   }
 
-  function populateFilters(models) {
-    resetFilterOptions(els.org, 'All');
-    resetFilterOptions(els.status, 'All');
-
-    uniqueSorted(models.map((model) => model.organisation)).forEach((value) => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      els.org.appendChild(option);
-    });
-
-    uniqueSorted(models.map((model) => model.modelStatus)).forEach((value) => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      els.status.appendChild(option);
-    });
+  function slugify(value) {
+    return String(value ?? '')
+      .normalize('NFKD')
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
-  function render(models) {
-    const query = normalize(els.q.value);
-    const org = els.org.value;
-    const status = els.status.value;
-
-    let items = models.filter((model) => {
-      if (org && model.organisation !== org) return false;
-      if (status && model.modelStatus !== status) return false;
-      if (query && !model.__searchText.includes(query)) return false;
-      return true;
-    });
-
-    items = sortItems(items);
-    els.count.textContent = `${items.length} model(s)`;
-    els.emptyState.hidden = items.length > 0;
-
-    els.rows.innerHTML = items.map((model) => `
-      <tr>
-        <td>
-          <a href="detail.html?id=${encodeURIComponent(model.id)}">${esc(model.modelName || model.id)}</a>
-          <div class="meta">${esc(model.id || '')}</div>
-        </td>
-        <td>${esc(model.organisation || '')}</td>
-        <td>${model.modelStatus ? `<span class="badge">${esc(model.modelStatus)}</span>` : ''}</td>
-        <td>${esc(model.aiTask || '')}</td>
-        <td>${esc(model.primaryPerformanceMetric || '')}</td>
-        <td>${esc(model.license || '')}</td>
-      </tr>
-    `).join('');
+  function toModelId(modelName, organisation) {
+    const org = slugify(organisation).slice(0, 24);
+    const name = slugify(modelName).slice(0, 48);
+    return [org, name].filter(Boolean).join('-') || `model-${Date.now()}`;
   }
 
-  function wire(models) {
-    els.q.addEventListener('input', () => render(models));
-    els.org.addEventListener('change', () => render(models));
-    els.status.addEventListener('change', () => render(models));
-    els.sort.addEventListener('change', () => render(models));
-    els.clear.addEventListener('click', () => {
-      els.q.value = '';
-      els.org.value = '';
-      els.status.value = '';
-      els.sort.value = 'name_asc';
-      render(models);
-    });
+  function normalizeModel(model) {
+    const normalized = {};
+
+    for (const field of FIELD_ORDER) {
+      normalized[field] = String(model?.[field] ?? '').trim();
+    }
+
+    if (!normalized.id && normalized.modelName && normalized.organisation) {
+      normalized.id = toModelId(normalized.modelName, normalized.organisation);
+    }
+
+    return normalized;
   }
 
-  try {
-    const models = (await window.ModelRegistryData.loadModels()).map((model) => ({
-      ...model,
-      __searchText: buildSearchText(model)
-    }));
+  function cleanModelData(payload) {
+    const data = normalizeModel(payload);
 
-    window.MODELS = models;
-    populateFilters(models);
-    wire(models);
-    render(models);
-  } catch (error) {
-    console.error(error);
-    els.count.textContent = 'Unable to load models';
-    els.rows.innerHTML = `<tr><td colspan="6">${esc(error.message || String(error))}</td></tr>`;
-    els.emptyState.hidden = true;
+    for (const key of Object.keys(data)) {
+      if (!data[key]) {
+        delete data[key];
+      }
+    }
+
+    return data;
   }
+
+  function validateModel(payload, existingModels) {
+    const errors = [];
+    const data = cleanModelData(payload);
+
+    const existingIds = new Set(
+      (existingModels || [])
+        .map((model) => String(model?.id || '').trim())
+        .filter(Boolean)
+    );
+
+    for (const field of REQUIRED_FIELDS) {
+      if (!String(data[field] || '').trim()) {
+        errors.push(`${FIELD_LABELS[field]} is required.`);
+      }
+    }
+
+    if (!data.id) {
+      errors.push('ID could not be generated. Please provide Model name and Organisation, or enter an ID manually.');
+    }
+
+    if (data.accessLink && !/^https?:\/\//i.test(data.accessLink) && data.accessLink.toLowerCase() !== 'n/a') {
+      errors.push('Access link must start with http:// or https://, or be N/A.');
+    }
+
+    if (data.id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(data.id)) {
+      errors.push('ID may only contain letters, numbers, and hyphens.');
+    }
+
+    const submittedId = String(payload?.id ?? '').trim();
+    const isExplicitUpdate = Boolean(submittedId);
+
+    if (data.id && existingIds.has(data.id) && !isExplicitUpdate) {
+      errors.push(`A model with id "${data.id}" already exists. Enter its ID explicitly if this is an update.`);
+    }
+
+    return { valid: errors.length === 0, errors, data };
+  }
+
+  function buildSearchText(model) {
+    const m = normalizeModel(model);
+    return normalize([
+      m.modelName,
+      m.organisation,
+      m.modelStatus,
+      m.aiTask,
+      m.inputSpecification,
+      m.outputSpecification,
+      m.architecture,
+      m.trainingDataOrigin,
+      m.primaryPerformanceMetric,
+      m.license,
+      m.moreInformation
+    ].filter(Boolean).join(' '));
+  }
+
+  function uniqueSorted(values) {
+    return [...new Set(values.map((value) => String(value ?? '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  function textOrDash(value) {
+    const text = String(value ?? '').trim();
+    return !text || text.toLowerCase() === 'n/a' ? '—' : esc(text);
+  }
+
+  function linkOrDash(value) {
+    const text = String(value ?? '').trim();
+    if (!text || text.toLowerCase() === 'n/a') return '—';
+    return `<a href="${esc(text)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+  }
+
+  function githubIssueUrl(model, config) {
+    const labels = encodeURIComponent((config.issueLabels || []).join(','));
+    const title = encodeURIComponent(`Model submission: ${model.modelName || model.id || 'new model'}`);
+    const body = encodeURIComponent([
+      '## Proposed model submission',
+      '',
+      'Please add or update the following file in data/models/',
+      '',
+      '```json',
+      JSON.stringify(model, null, 2),
+      '```'
+    ].join('\n'));
+    return `https://github.com/${config.owner}/${config.repo}/issues/new?labels=${labels}&title=${title}&body=${body}`;
+  }
+
+  return {
+    FIELD_ORDER,
+    FIELD_LABELS,
+    REQUIRED_FIELDS,
+    esc,
+    normalize,
+    slugify,
+    toModelId,
+    normalizeModel,
+    cleanModelData,
+    validateModel,
+    buildSearchText,
+    uniqueSorted,
+    textOrDash,
+    linkOrDash,
+    githubIssueUrl
+  };
 })();

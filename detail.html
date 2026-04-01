@@ -4,32 +4,216 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Model Detail</title>
+
   <style>
-    :root { --bg:#f6f8fb; --card:#fff; --text:#18212f; --muted:#5c6b80; --line:#dbe2ea; --accent:#1d4ed8; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Arial,sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width:980px; margin:0 auto; padding:24px; }
-    .card { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.04); padding:24px; }
-    .back { display:inline-block; margin-bottom:16px; color:var(--accent); text-decoration:none; }
-    h1 { margin:0 0 6px; }
-    .meta { color:var(--muted); margin-bottom:22px; }
-    dl { margin:0; }
-    dt { font-weight:700; margin-top:16px; }
-    dd { margin:6px 0 0; line-height:1.55; white-space:pre-wrap; }
-    pre { padding:14px; border-radius:12px; background:#0f172a; color:#e5eefc; overflow:auto; }
-    a { color:var(--accent); }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background-color: #f1f7f3;
+    }
+
+    .wrapper {
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 1100px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      height: 65px;
+      cursor: pointer;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      padding-right: 130px;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 13px;
+      padding-right: 130px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #eef5f0;
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .label {
+      color: #666;
+      font-size: 13px;
+    }
+
+    .value {
+      white-space: pre-wrap;
+      line-height: 1.35;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 22px 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2f6f4f;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #f6f6f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    pre {
+      font-size: 12px;
+      background: #f6f6f6;
+      padding: 12px;
+      border-radius: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <a class="back" href="index.html">← Back to index</a>
-    <section class="card">
-      <div id="app">Loading…</div>
-    </section>
-  </main>
-  <script src="js/config.js"></script>
-  <script src="js/common.js"></script>
-  <script src="js/data-loader.js"></script>
-  <script src="js/detail.js"></script>
+
+<div class="wrapper">
+  <div class="card">
+
+    <a href="https://www.eurosdr.net/" target="_blank">
+      <img src="EuroSDR.png" class="logo" />
+    </a>
+
+    <div class="topbar">
+      <a href="index.html">← Back to index</a>
+      <div class="muted" id="metaHint"></div>
+    </div>
+
+    <div id="app">Loading...</div>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/data-loader.js"></script>
+
+<script>
+  const { loadModels } = window.ModelRegistryData;
+
+  function esc(s) {
+    return String(s ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;");
+  }
+
+  function getId() {
+    return new URLSearchParams(location.search).get("id");
+  }
+
+  function row(label, value) {
+    return `<div class="label">${esc(label)}</div><div class="value">${value}</div>`;
+  }
+
+  function text(v) {
+    return v ? esc(v) : '<span class="muted">—</span>';
+  }
+
+  function link(v) {
+    return v ? `<a href="${esc(v)}" target="_blank">${esc(v)}</a>` : '<span class="muted">—</span>';
+  }
+
+  function render(m) {
+    document.title = m.modelName;
+
+    document.getElementById("metaHint").textContent =
+      `${m.id} • ${m.organisation} • ${m.modelStatus}`;
+
+    document.getElementById("app").innerHTML = `
+      <h1>${esc(m.modelName)}</h1>
+      <div class="muted">
+        <span class="badge">${esc(m.id)}</span>
+        ${m.modelStatus ? ` • <span class="badge">${esc(m.modelStatus)}</span>` : ""}
+      </div>
+
+      <div class="grid">
+        ${row("Model name", text(m.modelName))}
+        ${row("Organisation", text(m.organisation))}
+        ${row("Model Status", text(m.modelStatus))}
+        ${row("AI task", text(m.aiTask))}
+        ${row("Input specification", text(m.inputSpecification))}
+        ${row("Output specification", text(m.outputSpecification))}
+        ${row("Architecture", text(m.architecture))}
+        ${row("Training data origin", text(m.trainingDataOrigin))}
+        ${row("Primary performance metric", text(m.primaryPerformanceMetric))}
+        ${row("License", text(m.license))}
+        ${row("Access link", link(m.accessLink))}
+        ${row("More Information", text(m.moreInformation))}
+      </div>
+
+      <hr>
+
+      <details>
+        <summary>Show raw JSON</summary>
+        <pre>${esc(JSON.stringify(m, null, 2))}</pre>
+      </details>
+    `;
+  }
+
+  (async function () {
+    const id = getId();
+    if (!id) {
+      document.getElementById("app").innerText = "Missing id";
+      return;
+    }
+
+    const models = await loadModels();
+    const model = models.find(m => m.id === id);
+
+    if (!model) {
+      document.getElementById("app").innerText = "Model not found";
+      return;
+    }
+
+    render(model);
+  })();
+</script>
+
 </body>
 </html>

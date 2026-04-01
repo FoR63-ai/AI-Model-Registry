@@ -62,18 +62,27 @@ window.ModelRegistryUtils = (function () {
     return [org, name].filter(Boolean).join('-') || `model-${Date.now()}`;
   }
 
-  function cleanModelData(payload) {
-    const data = {};
+  function normalizeModel(model) {
+    const normalized = {};
 
     for (const field of FIELD_ORDER) {
-      const value = String(payload?.[field] ?? '').trim();
-      if (value) {
-        data[field] = value;
-      }
+      normalized[field] = String(model?.[field] ?? '').trim();
     }
 
-    if (!data.id && data.modelName && data.organisation) {
-      data.id = toModelId(data.modelName, data.organisation);
+    if (!normalized.id && normalized.modelName && normalized.organisation) {
+      normalized.id = toModelId(normalized.modelName, normalized.organisation);
+    }
+
+    return normalized;
+  }
+
+  function cleanModelData(payload) {
+    const data = normalizeModel(payload);
+
+    for (const key of Object.keys(data)) {
+      if (!data[key]) {
+        delete data[key];
+      }
     }
 
     return data;
@@ -118,18 +127,19 @@ window.ModelRegistryUtils = (function () {
   }
 
   function buildSearchText(model) {
+    const m = normalizeModel(model);
     return normalize([
-      model.modelName,
-      model.organisation,
-      model.modelStatus,
-      model.aiTask,
-      model.inputSpecification,
-      model.outputSpecification,
-      model.architecture,
-      model.trainingDataOrigin,
-      model.primaryPerformanceMetric,
-      model.license,
-      model.moreInformation
+      m.modelName,
+      m.organisation,
+      m.modelStatus,
+      m.aiTask,
+      m.inputSpecification,
+      m.outputSpecification,
+      m.architecture,
+      m.trainingDataOrigin,
+      m.primaryPerformanceMetric,
+      m.license,
+      m.moreInformation
     ].filter(Boolean).join(' '));
   }
 
@@ -149,31 +159,11 @@ window.ModelRegistryUtils = (function () {
     return `<a href="${esc(text)}" target="_blank" rel="noopener">${esc(text)}</a>`;
   }
 
-  function downloadJson(filename, data) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = filename;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function copyText(text) {
-    await navigator.clipboard.writeText(text);
-  }
-
   function githubIssueUrl(model, config) {
     const labels = encodeURIComponent((config.issueLabels || []).join(','));
-    const isUpdate = Boolean(model.id && config.existingIds && config.existingIds.includes(model.id));
-    const title = encodeURIComponent(
-      isUpdate
-        ? `Model update: ${model.modelName || model.id || 'existing model'}`
-        : `Model submission: ${model.modelName || model.id || 'new model'}`
-    );
-
+    const title = encodeURIComponent(`Model submission: ${model.modelName || model.id || 'new model'}`);
     const body = encodeURIComponent([
-      isUpdate ? '## Proposed model update' : '## Proposed model submission',
+      '## Proposed model submission',
       '',
       'Please add or update the following file in data/models/',
       '',
@@ -181,7 +171,6 @@ window.ModelRegistryUtils = (function () {
       JSON.stringify(model, null, 2),
       '```'
     ].join('\n'));
-
     return `https://github.com/${config.owner}/${config.repo}/issues/new?labels=${labels}&title=${title}&body=${body}`;
   }
 
@@ -193,14 +182,13 @@ window.ModelRegistryUtils = (function () {
     normalize,
     slugify,
     toModelId,
+    normalizeModel,
     cleanModelData,
     validateModel,
     buildSearchText,
     uniqueSorted,
     textOrDash,
     linkOrDash,
-    downloadJson,
-    copyText,
     githubIssueUrl
   };
 })();

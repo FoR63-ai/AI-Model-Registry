@@ -33,6 +33,7 @@
       top: 20px;
       right: 25px;
       height: 65px;
+      width: auto;
       cursor: pointer;
     }
 
@@ -53,6 +54,7 @@
       border-radius: 8px;
       background: #eef5f0;
       font-size: 12px;
+      white-space: nowrap;
     }
 
     .grid {
@@ -94,19 +96,37 @@
       font-size: 12px;
     }
 
-    pre {
-      font-size: 12px;
-      background: #f6f6f6;
-      padding: 12px;
-      border-radius: 10px;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
-
     .topbar {
       display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
+    }
+
+    .left-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1,
+      .muted {
+        padding-right: 0;
+      }
+
+      .logo {
+        position: static;
+        display: block;
+        margin: 0 0 16px auto;
+      }
     }
   </style>
 </head>
@@ -115,16 +135,20 @@
 <div class="wrapper">
   <div class="card">
 
-    <a href="https://www.eurosdr.net/" target="_blank">
-      <img src="EuroSDR.png" class="logo" />
+    <a href="https://www.eurosdr.net/" target="_blank" rel="noopener noreferrer">
+      <img src="EuroSDR.png" alt="EuroSDR logo" class="logo" />
     </a>
 
     <div class="topbar">
-      <a href="index.html">← Back to index</a>
+      <div class="left-actions">
+        <a href="index.html">← Back to index</a>
+      </div>
       <div class="muted" id="metaHint"></div>
     </div>
 
-    <div id="app">Loading...</div>
+    <div id="app">
+      <div class="muted" style="padding-right:0;">Loading...</div>
+    </div>
 
   </div>
 </div>
@@ -132,86 +156,100 @@
 <script src="js/config.js"></script>
 <script src="js/common.js"></script>
 <script src="js/data-loader.js"></script>
-
 <script>
-  const { loadModels } = window.ModelRegistryData;
+  (function () {
+    const {
+      esc,
+      textOrDash,
+      linkOrDash,
+      normalizeModel
+    } = window.ModelRegistryUtils;
 
-  function esc(s) {
-    return String(s ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;");
-  }
+    const { loadModels } = window.ModelRegistryData;
 
-  function getId() {
-    return new URLSearchParams(location.search).get("id");
-  }
-
-  function row(label, value) {
-    return `<div class="label">${esc(label)}</div><div class="value">${value}</div>`;
-  }
-
-  function text(v) {
-    return v ? esc(v) : '<span class="muted">—</span>';
-  }
-
-  function link(v) {
-    return v ? `<a href="${esc(v)}" target="_blank">${esc(v)}</a>` : '<span class="muted">—</span>';
-  }
-
-  function render(m) {
-    document.title = m.modelName;
-
-    document.getElementById("metaHint").textContent =
-      `${m.id} • ${m.organisation} • ${m.modelStatus}`;
-
-    document.getElementById("app").innerHTML = `
-      <h1>${esc(m.modelName)}</h1>
-      <div class="muted">
-        <span class="badge">${esc(m.id)}</span>
-        ${m.modelStatus ? ` • <span class="badge">${esc(m.modelStatus)}</span>` : ""}
-      </div>
-
-      <div class="grid">
-        ${row("Model name", text(m.modelName))}
-        ${row("Organisation", text(m.organisation))}
-        ${row("Model Status", text(m.modelStatus))}
-        ${row("AI task", text(m.aiTask))}
-        ${row("Input specification", text(m.inputSpecification))}
-        ${row("Output specification", text(m.outputSpecification))}
-        ${row("Architecture", text(m.architecture))}
-        ${row("Training data origin", text(m.trainingDataOrigin))}
-        ${row("Primary performance metric", text(m.primaryPerformanceMetric))}
-        ${row("License", text(m.license))}
-        ${row("Access link", link(m.accessLink))}
-        ${row("More Information", text(m.moreInformation))}
-      </div>
-
-      <hr>
-
-      <details>
-        <summary>Show raw JSON</summary>
-        <pre>${esc(JSON.stringify(m, null, 2))}</pre>
-      </details>
-    `;
-  }
-
-  (async function () {
-    const id = getId();
-    if (!id) {
-      document.getElementById("app").innerText = "Missing id";
-      return;
+    function getId() {
+      return new URLSearchParams(location.search).get('id');
     }
 
-    const models = await loadModels();
-    const model = models.find(m => m.id === id);
-
-    if (!model) {
-      document.getElementById("app").innerText = "Model not found";
-      return;
+    function row(label, valueHtml) {
+      return `
+        <div class="label">${esc(label)}</div>
+        <div class="value">${valueHtml}</div>
+      `;
     }
 
-    render(model);
+    function show(html) {
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function showError(title, message) {
+      document.title = title;
+      document.getElementById('metaHint').textContent = '';
+      show(`
+        <h1>${esc(title)}</h1>
+        <p>${esc(message)}</p>
+      `);
+    }
+
+    function renderModel(model) {
+      const m = normalizeModel(model);
+      const title = `${m.modelName || m.id || 'Model'} – Detail`;
+      document.title = title;
+
+      const hintParts = [];
+      if (m.id) hintParts.push(`ID: ${m.id}`);
+      if (m.organisation) hintParts.push(`Organisation: ${m.organisation}`);
+      if (m.modelStatus) hintParts.push(`Status: ${m.modelStatus}`);
+      document.getElementById('metaHint').textContent = hintParts.join(' • ');
+
+      show(`
+        <h1>${esc(m.modelName || 'Untitled model')}</h1>
+        <div class="muted">
+          ${m.id ? `<span class="badge">${esc(m.id)}</span>` : ''}
+          ${m.modelStatus ? ` &nbsp;•&nbsp; <span class="badge">${esc(m.modelStatus)}</span>` : ''}
+        </div>
+
+        <div class="grid">
+          ${row('Model name', textOrDash(m.modelName))}
+          ${row('Organisation', textOrDash(m.organisation))}
+          ${row('Model Status', textOrDash(m.modelStatus))}
+          ${row('AI task', textOrDash(m.aiTask))}
+          ${row('Input specification', textOrDash(m.inputSpecification))}
+          ${row('Output specification', textOrDash(m.outputSpecification))}
+          ${row('Architecture', textOrDash(m.architecture))}
+          ${row('Training data origin', textOrDash(m.trainingDataOrigin))}
+          ${row('Primary performance metric', textOrDash(m.primaryPerformanceMetric))}
+          ${row('License', textOrDash(m.license))}
+          ${row('Access link', linkOrDash(m.accessLink))}
+          ${row('More Information', textOrDash(m.moreInformation))}
+        </div>
+      `);
+    }
+
+    async function main() {
+      try {
+        const id = getId();
+        if (!id) {
+          showError('Not found', 'Missing query parameter: ?id=...');
+          return;
+        }
+
+        const models = await loadModels();
+        const model = models.find((item) => String(item.id) === String(id));
+
+        if (!model) {
+          showError('Not found', `No model found for id="${id}".`);
+          return;
+        }
+
+        renderModel(model);
+      } catch (error) {
+        console.error(error);
+        showError('Error', `A script error stopped the page: ${error?.message || String(error)}`);
+      }
+    }
+
+    main();
   })();
 </script>
 

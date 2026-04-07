@@ -1,0 +1,11 @@
+{
+  "id": "l-anders-agsdag",
+  "modelName": "Anders test",
+  "organisation": "Lantmäteriet",
+  "modelStatus": "Experimental",
+  "aiTask": "Buildings",
+  "inputSpecification": "kadsgnlö",
+  "outputSpecification": "lsakdgla",
+  "architecture": "lskdg",
+  "trainingDataOrigin": "alksdg"
+}

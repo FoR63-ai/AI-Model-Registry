@@ -1,0 +1,12 @@
+{
+  "id": "andringsudpegning-1km2benchmark-iter75-swin",
+  "modelName": "Buildiings detection swin",
+  "organisation": "KDS",
+  "modelStatus": "To be used as part of ensamble in production test 2026 (buildigns change detection)",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "resolution 16cm\nrgb\nNo limit on image sizes",
+  "outputSpecification": "resolution and size ,same as input\ngives logits for each class (buildign and background)",
+  "architecture": "Backbone: Swin Transformer,  Decoder: UPerNet",
+  "trainingDataOrigin": "KDS spring ortofoto 2024 2025",
+  "moreInformation": "The training images have been transformed to align rooftops with building footprints. As a result, the model detects the position of rooftops rather than the actual positions of buildings. \n\nMore info at : \nhttps://github.com/SDFIdk/ML_sdfi_fastai2/tree/SOTA_models_2026\nhttps://github.com/SDFIdk/ML_geo_production"
+}

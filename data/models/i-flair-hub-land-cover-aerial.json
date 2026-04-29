@@ -1,0 +1,15 @@
+{
+  "id": "i-flair-hub-land-cover-aerial",
+  "modelName": "FLAIR-HUB land-cover from aerial imagery models",
+  "organisation": "IGN-F",
+  "modelStatus": "In production",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "Trained on : \n-  R-G-B or NIR-R-G aerial images with 20 cm spatial resolution;\n-  512x512 pixels (102.4x102.4m) patches. \n\nInference allows large-scale images (chunking+overlap).",
+  "outputSpecification": "Logits or argmax on a 15 classes nomenclature.",
+  "architecture": "Swin (Tiny,Small,Base,Large) + UPerNet",
+  "trainingDataOrigin": "IGNF orthophotos (2017-2022)",
+  "primaryPerformanceMetric": "77.5 O.A. ; 64.1 mIoU",
+  "license": "Etalab 2.0",
+  "accessLink": "https://huggingface.co/collections/IGNF/flair-hub-models-land-cover-lc",
+  "moreInformation": "Project page : https://ignf.github.io/FLAIR/ \nPublication : https://www.sciencedirect.com/science/article/pii/S0924271626001899\nAssociated code : https://github.com/IGNF/FLAIR-HUB/"
+}

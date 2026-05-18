@@ -1,0 +1,15 @@
+{
+  "id": "b-samlora-for-building-construction-site-detection",
+  "modelName": "SAMLoRA for Building Construction Site Detection",
+  "organisation": "BKG",
+  "modelStatus": "Validated",
+  "aiTask": "Semantic Segmentation",
+  "inputSpecification": "The input data are True Orthophotos (RGB) with 20 cm spatial resolution  in the form of image chips with size 1024x1024 px.",
+  "outputSpecification": "The model outputs a raster image of confidence values between 0 and 1 (construction/no construction). From that values over 0.5 are converted to a binary mask and lastly vectorized to polygons. The geospatial properties of the input data are preserved.",
+  "architecture": "ViT Backbone Segment Anything Model + Low Rank Adaption Layers",
+  "trainingDataOrigin": "Labels of construction sites were created manually from selected ortophotos.",
+  "primaryPerformanceMetric": "F1-score ~0.7",
+  "license": "Model only for internal use",
+  "accessLink": "N/A",
+  "moreInformation": "The model is developed in the context of a joint project between BKG and the German Federal Statistical Office called \"EO4ConStat\". The goal is the creation of a dataset that can be used in the quality assurance of the German construction statistics. \nThe same model architecture was also successfully tested on meadow orchards, using a curated training dataset from OSM data and manually corrected/created orchard labels. Both models were prototyped in the German county North-Rhine-Westphalia."
+}

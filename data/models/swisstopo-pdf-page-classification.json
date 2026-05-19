@@ -1,0 +1,14 @@
+{
+  "id": "swisstopo-pdf-page-classification",
+  "modelName": "Geological PDF page classification",
+  "organisation": "swisstopo",
+  "modelStatus": "In production",
+  "aiTask": "Classification and extraction of structured data from geological PDF files",
+  "inputSpecification": "PDF files, primarily geological reports. The input can be a single PDF file or a directory of PDF files. The classifier categorizes individual PDF pages into document classes.",
+  "outputSpecification": "JSON output containing document structure metadata and page level document class predictions. Page types include: Text, Boreprofile, Maps, TitlePage, GeoProfile, Table, Diagram and Unknown.",
+  "architecture": "XGBoost classifier",
+  "trainingDataOrigin": "Manually labelled geological documents from Switzerland",
+  "primaryPerformanceMetric": "Classification macro F1 score: 80%",
+  "license": "AGPL 3.0",
+  "accessLink": "https://github.com/swisstopo/swissgeol-assets-dataextraction"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "swisstopo-large-rock-detection-from-aerial-imagery",
+  "modelName": "Large Rock Detection from Aerial Imagery",
+  "organisation": "swisstopo",
+  "modelStatus": "Validated",
+  "aiTask": "Object detection",
+  "inputSpecification": "- High-resolution aerial imagery (swissIMAGE, RGB)\n- Digital elevation model (swissALTI3D)\n- Derived hillshade from DEM\n- Raster tiles (processed in tiles, typically aligned to Swiss grid)\n- Input size: 640 × 640 pixels\n- Geographic constraint: Switzerland (trained on Alpine terrain)\n- Requires preprocessing including DEM-derived features and tiling",
+  "outputSpecification": "- Bounding boxes representing detected rocks\n- Output stored in DuckDB and exported to GeoPackage (.gpkg)\n- Spatially referenced detections aligned with input tiles\n- Confidence score per detection\n- Object definition: large rocks ≥ approx. 5×5×5 m",
+  "architecture": "YOLOv8m object detection model (Ultralytics, PyTorch-based)",
+  "trainingDataOrigin": "- ~4,000 manually annotated rock instances from swisstopo - Additional ~900 negative samples (urban areas, glaciers) - Geographic scope: Switzerland (mainly Alpine regions) - Input sources: swissIMAGE (RGB) and swissALTI3D (DEM) - Annotation format: point annotations converted to bounding boxes (~15 m size)",
+  "primaryPerformanceMetric": "Recall ≈ 74% and Precision ≈ 63% on independent test set (327 annotated rocks)",
+  "accessLink": "https://github.com/eceo-epfl/large-rock-detection/tree/master",
+  "moreInformation": "The model detects large rock formations using combined RGB imagery and elevation-derived features. It is optimized for Alpine terrain and favors recall over precision, requiring manual filtering of false positives. The pipeline includes automatic data download, tiling, inference, and geospatial output generation. Confidence thresholds can be adjusted to trade off completeness vs. accuracy."
+}

@@ -1,0 +1,14 @@
+{
+  "id": "e-solar-panels-detection-with-post-processing",
+  "modelName": "Solar panels detection with post-processing focused on ground-mounted panels.",
+  "organisation": "Estonian Land and Spatial Development Board",
+  "modelStatus": "In production",
+  "aiTask": "Object detection",
+  "inputSpecification": "RGB 3 band raster 10-20cm GSD. Best input - Estonian orthoimagery starting from 2025 with 10cm GSD.",
+  "outputSpecification": "1 band raster with 2 classes: solar panel and other. \nAfter post-processing output is: geopackage with polygons of ground-mounted solar parks. Number of panels in solar park is included as attribute.",
+  "architecture": "UNet",
+  "trainingDataOrigin": "Estonia",
+  "primaryPerformanceMetric": "-",
+  "license": "-",
+  "moreInformation": "In combination with existing Estonian Topographic Database and post-processing the precision of new solar parks detected is ~80-90% (from 600 \"potential solar park\" polygons ~500-570 will be real ones)"
+}

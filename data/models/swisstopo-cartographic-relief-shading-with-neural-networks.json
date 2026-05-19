@@ -1,0 +1,13 @@
+{
+  "id": "swisstopo-cartographic-relief-shading-with-neural-networks",
+  "modelName": "Cartographic Relief Shading with Neural Networks",
+  "organisation": "swisstopo",
+  "modelStatus": "In production",
+  "aiTask": "Image-to-image translation (DEM to shaded relief rendering)",
+  "inputSpecification": "- Raster digital elevation model (DEM)\n- Format: raster grid (e.g. GeoTIFF or equivalent)\n- Input values: elevation normalised to [0,1]\n- Tile-based processing (typically 256x256 or 512x512 pixels)\n- No additional terrain derivatives required (e.g. slope, aspect)\n- Consistent resolution with training data recommended",
+  "outputSpecification": "- Grayscale raster image (shaded relief)\n- Same spatial reference as input DEM\n- Continuous intensity values representing illumination and terrain structure\n- No explicit class schema\n- No confidence scores provided",
+  "architecture": "Modified U-Net convolutional neural network (encoder-decoder with skip connections)",
+  "trainingDataOrigin": "- Manual shaded relief maps from Swiss national map series (swisstopo) - Paired with corresponding digital elevation models - Geographic scope: Switzerland - Multi-scale cartographic products (1:50,000 and smaller scales) - Contains subjective cartographic generalisation and stylistic decisions",
+  "primaryPerformanceMetric": "Expert evaluation: majority rating good to very good by 18 cartographic experts",
+  "moreInformation": "arxiv.org/pdf/2010.01256"
+}

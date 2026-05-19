@@ -1,0 +1,14 @@
+{
+  "id": "swisstopo-borehole-data-extraction",
+  "modelName": "Borehole data extraction",
+  "organisation": "swisstopo",
+  "modelStatus": "In production",
+  "aiTask": "Document understanding and structured information extraction from borehole profile PDFs",
+  "inputSpecification": "PDF files:\n\nDocuments containing borehole profiles / logs\nDigital or scanned with OCR already applied",
+  "outputSpecification": "JSON, structured geological data including:\n\nMetadata (coordinates, borehole name, elevation...)\nLithological layers (depths and corresponding descriptions)\nGroundwater measurements",
+  "architecture": "Combination of custom heuristic rules and methods from NLP and computer vision.",
+  "trainingDataOrigin": "Manually labelled borehole profiles from Switzerland",
+  "primaryPerformanceMetric": "Layer F1 score on ZH dataset: 84%",
+  "license": "AGPL 3.0",
+  "accessLink": "https://github.com/swisstopo/swissgeol-boreholes-dataextraction"
+}

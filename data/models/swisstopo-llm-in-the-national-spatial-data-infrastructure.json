@@ -1,0 +1,15 @@
+{
+  "id": "swisstopo-llm-in-the-national-spatial-data-infrastructure",
+  "modelName": "LLM in the National Spatial Data Infrastructure",
+  "organisation": "swisstopo",
+  "modelStatus": "Experimental",
+  "aiTask": "Semantic search in natural language and natural language geodata querying",
+  "inputSpecification": "Natural language user queries. \nPoC 1 uses metadata from the geocat.ch API. \nPoC 2 uses geodata from the geoadmin.ch API",
+  "outputSpecification": "PoC 1 returns relevant datasets, metadata summaries and geodata previews where available. \nPoC 2 displays relevant geodata on a map and supports limited data analysis, such as filtering",
+  "architecture": "Agentic RAG",
+  "trainingDataOrigin": "No model training",
+  "primaryPerformanceMetric": "No quantitative primary performance metric available. The prototypes have been tested by external parties. It is difficult to make a definitive assessment: on the one hand, the potential of conversational interfaces to lower the barrier for non expert users is highlighted; on the other hand, there are issues of trust and performance that need to be addressed.",
+  "license": "Not publicly reusable. Internal code only.",
+  "accessLink": "N/A",
+  "moreInformation": "Published documentation: https://www.geoinformation.ch/de/projektseite-llm\nInternal final report available on request."
+}

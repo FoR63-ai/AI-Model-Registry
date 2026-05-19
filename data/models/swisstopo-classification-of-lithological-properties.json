@@ -1,0 +1,13 @@
+{
+  "id": "swisstopo-classification-of-lithological-properties",
+  "modelName": "Classification of lithological properties",
+  "organisation": "swisstopo",
+  "modelStatus": "Experimental",
+  "aiTask": "Text classification of lithological material descriptions",
+  "inputSpecification": "Plain text layer descriptions from borehole profiles",
+  "outputSpecification": "Lithological property labels for plain text layer descriptions, expressed according to controlled vocabularies.",
+  "architecture": "Fine-tuned BERT model for classification",
+  "trainingDataOrigin": "Labelled layer descriptions from Swiss borehole data. Ground truth files are used for validation and testing.",
+  "license": "AGPL 3.0",
+  "accessLink": "https://github.com/swisstopo/swissgeol-boreholes-dataextraction"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "k-train-1km2benchmark-iter-71-effnet-L",
+  "modelName": "train_1km2benchmark_iter_71_effnet_L",
+  "organisation": "KDS",
+  "modelStatus": "Produktion",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "resolution 16cm\nrgb\nNo limit on image sizes",
+  "outputSpecification": "resolution and size ,same as input\ngives logits for each class (buildign and background)",
+  "architecture": "backbone Efficientnetv2_L ,  Decoder Unet",
+  "trainingDataOrigin": "KDS spring ortofoto 2024 2025",
+  "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_buildings/blob/main/andringsudpegning_1km2benchmark_iter_71_effnet_L.pth",
+  "moreInformation": "Used as part of ensamble in production test 2026 (buildings change detection). The training images have been transformed to align rooftops with building footprints. As a result, the model detects the position of rooftops rather than the actual positions of buildings."
+}

@@ -1,0 +1,14 @@
+{
+  "id": "kds-iter-79-resnet34-permeable-surfaces",
+  "modelName": "iter_79_resnet34_permeable_surfaces",
+  "organisation": "KDS",
+  "modelStatus": "Produktion",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "The model was trained on 10 cm resolution multi-channel imagery, including DSM and DTM data, RGB-NIR orthophotos, and RGB-NIR oblique images (LOD). \nAll 10 available channels were used.",
+  "outputSpecification": "resolution and size ,same as input\ngives logits for each class (buildign and background)",
+  "architecture": "backbone resnet34 ,  Decoder Unet",
+  "trainingDataOrigin": "KDS spring ortofoto ,  oblique images (LOD) lidar based DSM DTM",
+  "primaryPerformanceMetric": "% validationaccuracy",
+  "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_Permeable_surfaces/blob/main/iter_79_99.pth",
+  "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259"
+}

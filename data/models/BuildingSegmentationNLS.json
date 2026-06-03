@@ -1,0 +1,14 @@
+{
+  "id": "BuildingSegmentationNLS",
+  "modelName": "NLS-building-segmentation",
+  "organisation": "National Land Survey of Finland",
+  "modelStatus": "Experimental",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "The model uses RGB-channels from true orthophoto, LiDAR DSM and LiDAR DEM. Input is provided as a 5-channel image with 25 cm resolution (RGB + DSM + DEM).",
+  "outputSpecification": "The model generates a two-channel logit map per pixel (representing background and building classes)",
+  "architecture": "UNet",
+  "trainingDataOrigin": "The model has been trained with remote sensing data from different parts of Finland collected by the NLS.",
+  "primaryPerformanceMetric": "F1-score: ~0.93",
+  "license": "MIT",
+  "accessLink": "https://github.com/nlsfi/topographic-data-ai-tools/tree/main/building-segmentation"
+}

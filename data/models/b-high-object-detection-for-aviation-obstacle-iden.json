@@ -1,0 +1,14 @@
+{
+  "id": "b-high-object-detection-for-aviation-obstacle-iden",
+  "modelName": "Object Classification for Aviation Obstacle Identification in ALS LiDAR Point Clouds",
+  "organisation": "BKG",
+  "modelStatus": "Validated",
+  "aiTask": "Object classification",
+  "inputSpecification": "The input data is binary numpy arrays derived from LAS 1.4 ALS point clouds. Single Photon Lidar (SPL) has been used for the survey. The following features were used: XYZ + Intensity, Height Above Ground, NumberOfReturns, ReturnNumber",
+  "outputSpecification": "The model outputs object-wise single class label. The class schema consists of 9 different classes: Power poles, power lines, towers, wind mills, 3 different crane types, noise and other",
+  "architecture": "PointNet (Qi. et al. 2017)",
+  "trainingDataOrigin": "1,000 self-annotated objects > 40 m height above ground from the pilot project of the Digital Twin Germany. The region covers the metropolitan region of Hamburg (~8600 km²). The survey was conducted with an SPL sensor in winter 2021/2022.",
+  "primaryPerformanceMetric": "Accuracy: 91%; mean accuracy: ~ 76.3%",
+  "license": "Model only for internal use",
+  "moreInformation": "Within the Digital Twin Germany (DigiZ-DE) [1] aviation obstacles are being identified from 3D ALS data. The obstacle type is usually derived from the dominant semantic class already present in the data, but more detailed information about the obstacles is needed. In a preprocessing pipeline high objects > 40 m from the \"Unclassified\" class are extracted using rule-based methods and clustered and afterwards fed into a PointNet, trained from scratch, for object-wise classification. The training data is imbalanced, resulting in varying class-wise performance. For major classes such as wind turbines, power poles, and power lines, the model achieves approximately 95% precision, recall, and F1-score.\n\n[1] Digitaler Zwilling Deutschland (DigiZ-DE): https://www.bkg.bund.de/DE/Forschung/Projekte/Digitaler-Zwilling/Digitaler-Zwilling_cont.html"
+}

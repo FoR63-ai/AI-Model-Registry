@@ -1,0 +1,14 @@
+{
+  "id": "b-minkunet14a-for-tower-conductor-segmentation-in",
+  "modelName": "MinkUNet14A for Tower--Conductor Segmentation in ALS LiDAR Point Clouds",
+  "organisation": "BKG",
+  "modelStatus": "Experimental",
+  "aiTask": "Semantic Segmentation",
+  "inputSpecification": "The model expects a voxel grid as an input. The model was trained on LiDAR point clouds with XYZ coordinates expressed in meters. Raw LiDAR Point clouds must be voxelized at a resolution of 10 cm (0.10 m). Only XYZ coordinate information is used as input, no additional voxel-level attributes.",
+  "outputSpecification": "For the full voxel grid, the model outputs a binary segmentation mask with the interpretation of 0 -> \"Conductor\" and 1 -> \"Tower\". Voxel predictions are mapped back to point coordinates for the final output.",
+  "architecture": "U-Net with sparse 3D convolutions.",
+  "trainingDataOrigin": "Annotated private and publicly available datasets (see more information)",
+  "primaryPerformanceMetric": "mIoU: ~97",
+  "license": "Model only for internal use",
+  "moreInformation": "The model was developed to semantically refine transmission corridor ALS point clouds into the classes tower and conductor. The model has been validated across 5 different datasets (private: DigiZ-DE [1], publicly available: DALES [2], ECLAIR [3], GridNetHD [4], TowerDataset [5]) with performance varying between 91 - 98 mIoU.\n\n----------------\n[1] Digitaler Zwilling Deutschland (DigiZ-DE): https://www.bkg.bund.de/DE/Forschung/Projekte/Digitaler-Zwilling/Digitaler-Zwilling_cont.html\n[2] Varney et al. 2020, DALES: A large-scale aerial LiDAR data set for semantic segmentation.\n[3] Melekhov et al. 2024,  Eclair: A high-fidelity aerial lidar dataset for semantic segmentation\n[4] Carreaud et al. 2026, GridNet-HD: A High-Resolution Multi-Modal Dataset for LiDAR-Image Fusion on Power Line Infrastructure\n[5] Cui et al., 2026, TowerDataset: A Heterogeneous Benchmark for Transmission Corridor Segmentation with a Global-Local Fusion Framework"
+}

@@ -19,7 +19,8 @@ const fieldOrder = [
   'primaryPerformanceMetric',
   'license',
   'accessLink',
-  'moreInformation'
+  'moreInformation',
+  'lastUpdated'
 ];
 
 // ✅ Endast dessa är obligatoriska nu

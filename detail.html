@@ -101,6 +101,48 @@
       color: var(--ink);
     }
 
+    .detail-actions {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .button-link:hover {
+      background: var(--surface);
+      border-color: var(--muted-2);
+      text-decoration: none;
+    }
+
+    .button-link.danger {
+      color: #8b3a1e;
+      border-color: #e4b8a8;
+    }
+
+    .button-link.danger:hover {
+      background: #fbeee7;
+      border-color: #e4b8a8;
+    }
+
     .muted {
       color: var(--muted-2);
       font-size: 13px;
@@ -153,6 +195,10 @@
     @media (max-width: 760px) {
       .page {
         padding: 32px 20px 56px;
+      }
+
+      .detail-actions {
+        flex-direction: column;
       }
 
       .grid {
@@ -209,8 +255,12 @@
       esc,
       textOrDash,
       linkOrDash,
-      normalizeModel
+      normalizeModel,
+      formatDate,
+      deleteIssueUrl
     } = window.ModelRegistryUtils;
+
+    const config = window.REGISTRY_CONFIG || {};
 
     const { loadModels } = window.ModelRegistryData;
 
@@ -250,7 +300,13 @@
       document.getElementById('metaHint').textContent = hintParts.join(' • ');
 
       show(`
-        <h1>${esc(m.modelName || 'Untitled model')}</h1>
+        <div class="detail-actions">
+          <h1>${esc(m.modelName || 'Untitled model')}</h1>
+          <div class="actions">
+            <a class="button-link ghost" href="index.html?edit=${encodeURIComponent(m.id)}">Edit</a>
+            <a class="button-link ghost danger" id="deleteLink" target="_blank" rel="noopener">Propose deletion</a>
+          </div>
+        </div>
         <div class="muted">
           ${m.id ? `<span class="badge">${esc(m.id)}</span>` : ''}
           ${m.modelStatus ? ` &nbsp;•&nbsp; <span class="badge">${esc(m.modelStatus)}</span>` : ''}
@@ -269,8 +325,19 @@
           ${row('License', textOrDash(m.license))}
           ${row('Access link', linkOrDash(m.accessLink))}
           ${row('More Information', textOrDash(m.moreInformation))}
+          ${row('Last updated', formatDate(m.lastUpdated))}
         </div>
       `);
+
+      const deleteLink = document.getElementById('deleteLink');
+      if (deleteLink) {
+        deleteLink.href = deleteIssueUrl(m, config);
+        deleteLink.addEventListener('click', (e) => {
+          if (!confirm(`Open a GitHub issue proposing deletion of "${m.modelName || m.id}"? A maintainer will review it before it's removed.`)) {
+            e.preventDefault();
+          }
+        });
+      }
     }
 
     async function main() {

@@ -12,7 +12,8 @@ window.ModelRegistryUtils = (function () {
     'primaryPerformanceMetric',
     'license',
     'accessLink',
-    'moreInformation'
+    'moreInformation',
+    'lastUpdated'
   ];
 
   const FIELD_LABELS = {
@@ -28,7 +29,8 @@ window.ModelRegistryUtils = (function () {
     primaryPerformanceMetric: 'Primary performance metric',
     license: 'License',
     accessLink: 'Access link',
-    moreInformation: 'More information'
+    moreInformation: 'More information',
+    lastUpdated: 'Last updated'
   };
 
   const REQUIRED_FIELDS = ['modelName', 'organisation', 'aiTask'];
@@ -159,17 +161,53 @@ window.ModelRegistryUtils = (function () {
     return `<a href="${esc(text)}" target="_blank" rel="noopener">${esc(text)}</a>`;
   }
 
-  function githubIssueUrl(model, config) {
-    const labels = encodeURIComponent((config.issueLabels || []).join(','));
-    const title = encodeURIComponent(`Model submission: ${model.modelName || model.id || 'new model'}`);
+  function formatDate(value) {
+    const text = String(value ?? '').trim();
+    if (!text) return '—';
+    const date = new Date(text);
+    if (Number.isNaN(date.getTime())) return esc(text);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // mode: 'add' (default) or 'update'. Both produce a prefilled GitHub issue
+  // carrying the full model JSON; a maintainer applies the "approved" or
+  // "update-approved" label to actually write it, per .github/workflows/approve-model.yml.
+  function githubIssueUrl(model, config, mode) {
+    const isUpdate = mode === 'update';
+    const labels = encodeURIComponent(
+      (isUpdate ? config.updateIssueLabels : config.issueLabels || []).join(',')
+    );
+    const title = encodeURIComponent(
+      `${isUpdate ? 'Update model submission' : 'Model submission'}: ${model.modelName || model.id || 'new model'}`
+    );
     const body = encodeURIComponent([
-      '## Proposed model submission',
+      isUpdate ? '## Proposed model update' : '## Proposed model submission',
       '',
-      'Please add or update the following file in data/models/',
+      isUpdate
+        ? `This updates the existing model \`${model.id}\`. A maintainer should apply the **update-approved** label to publish it.`
+        : 'Please add the following file to data/models/. A maintainer should apply the **approved** label to publish it.',
       '',
       '```json',
       JSON.stringify(model, null, 2),
       '```'
+    ].join('\n'));
+    return `https://github.com/${config.owner}/${config.repo}/issues/new?labels=${labels}&title=${title}&body=${body}`;
+  }
+
+  // Deletion doesn't need the full JSON — just the id the workflow should
+  // remove. A maintainer applies the "delete-approved" label to publish it.
+  function deleteIssueUrl(model, config) {
+    const labels = encodeURIComponent((config.deleteIssueLabels || []).join(','));
+    const title = encodeURIComponent(`Delete request: ${model.modelName || model.id || 'model'}`);
+    const body = encodeURIComponent([
+      '## Proposed model deletion',
+      '',
+      `Model ID: ${model.id}`,
+      `Model name: ${model.modelName || ''}`,
+      '',
+      `Please remove \`data/models/${model.id}.json\` from the registry. A maintainer should apply the **delete-approved** label to publish it.`,
+      '',
+      'Reason: _(edit this issue to add context)_'
     ].join('\n'));
     return `https://github.com/${config.owner}/${config.repo}/issues/new?labels=${labels}&title=${title}&body=${body}`;
   }
@@ -189,6 +227,8 @@ window.ModelRegistryUtils = (function () {
     uniqueSorted,
     textOrDash,
     linkOrDash,
-    githubIssueUrl
+    formatDate,
+    githubIssueUrl,
+    deleteIssueUrl
   };
 })();

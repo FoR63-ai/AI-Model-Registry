@@ -10,5 +10,6 @@
   "trainingDataOrigin": "Manually labelled borehole profiles from Switzerland",
   "primaryPerformanceMetric": "Layer F1 score on ZH dataset: 84%",
   "license": "AGPL 3.0",
-  "accessLink": "https://github.com/swisstopo/swissgeol-boreholes-dataextraction"
+  "accessLink": "https://github.com/swisstopo/swissgeol-boreholes-dataextraction",
+  "lastUpdated": "2026-05-19T05:50:20.000Z"
 }

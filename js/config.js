@@ -3,6 +3,9 @@ window.REGISTRY_CONFIG = {
   repo: 'AI-Model-Registry',
   branch: 'main',
   modelsPath: 'data/models',
+  modelsIndexUrl: 'data/models.json',
   guidanceUrl: 'metadata-guidance.html',
-  issueLabels: ['submission']
+  issueLabels: ['submission'],
+  updateIssueLabels: ['submission', 'update-request'],
+  deleteIssueLabels: ['deletion-request']
 };

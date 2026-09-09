@@ -10,5 +10,6 @@
   "trainingDataOrigin": "- ~4,000 manually annotated rock instances from swisstopo - Additional ~900 negative samples (urban areas, glaciers) - Geographic scope: Switzerland (mainly Alpine regions) - Input sources: swissIMAGE (RGB) and swissALTI3D (DEM) - Annotation format: point annotations converted to bounding boxes (~15 m size)",
   "primaryPerformanceMetric": "Recall ≈ 74% and Precision ≈ 63% on independent test set (327 annotated rocks)",
   "accessLink": "https://github.com/eceo-epfl/large-rock-detection/tree/master",
-  "moreInformation": "The model detects large rock formations using combined RGB imagery and elevation-derived features. It is optimized for Alpine terrain and favors recall over precision, requiring manual filtering of false positives. The pipeline includes automatic data download, tiling, inference, and geospatial output generation. Confidence thresholds can be adjusted to trade off completeness vs. accuracy."
+  "moreInformation": "The model detects large rock formations using combined RGB imagery and elevation-derived features. It is optimized for Alpine terrain and favors recall over precision, requiring manual filtering of false positives. The pipeline includes automatic data download, tiling, inference, and geospatial output generation. Confidence thresholds can be adjusted to trade off completeness vs. accuracy.",
+  "lastUpdated": "2026-05-19T06:00:29.000Z"
 }

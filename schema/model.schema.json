@@ -29,7 +29,11 @@
     "primaryPerformanceMetric": { "type": "string" },
     "license": { "type": "string" },
     "accessLink": { "type": "string" },
-    "moreInformation": { "type": "string" }
+    "moreInformation": { "type": "string" },
+    "lastUpdated": {
+      "type": "string",
+      "description": "Set automatically by the approval workflow on every add/update; not submitter-provided."
+    }
   },
   "additionalProperties": false
 }

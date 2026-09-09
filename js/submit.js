@@ -14,8 +14,14 @@
     modal: document.getElementById('submitModal'),
     form: document.getElementById('submitForm'),
     errors: document.getElementById('submitErrors'),
-    openIssue: document.getElementById('openIssue')
+    openIssue: document.getElementById('openIssue'),
+    title: document.getElementById('submitTitle'),
+    idField: document.querySelector('#submitForm [name="id"]')
   };
+
+  // 'add' (default) or 'update' — set by openForEdit(), read by
+  // updateSubmitLink() to build the right kind of prefilled GitHub issue.
+  let mode = 'add';
 
   function getPayload() {
     const payload = {};
@@ -57,7 +63,7 @@
     renderErrors(validation.errors);
 
     if (validation.valid) {
-      els.openIssue.href = githubIssueUrl(validation.data, config);
+      els.openIssue.href = githubIssueUrl(validation.data, config, mode);
       els.openIssue.style.pointerEvents = 'auto';
       els.openIssue.style.opacity = '1';
     } else {
@@ -69,16 +75,55 @@
     return validation;
   }
 
-  function openModal() {
+  function fillForm(model) {
+    FIELD_ORDER.forEach((field) => {
+      const input = els.form.querySelector(`[name="${field}"]`);
+      if (input) input.value = model[field] || '';
+    });
+  }
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    const isEdit = mode === 'update';
+
+    if (els.title) {
+      els.title.textContent = isEdit ? 'Edit model JSON' : 'Create a new model JSON';
+    }
+    if (els.openIssue) {
+      els.openIssue.textContent = isEdit ? 'Save changes' : 'Submit model';
+    }
+    if (els.idField) {
+      els.idField.readOnly = isEdit;
+    }
+  }
+
+  function openModal(prefillModel) {
+    els.form.reset();
+
+    if (prefillModel) {
+      setMode('update');
+      fillForm(prefillModel);
+    } else {
+      setMode('add');
+    }
+
     els.modal.showModal();
     updateSubmitLink();
   }
 
   function closeModal() {
     els.modal.close();
+
+    // Drop ?edit=... from the URL so a refresh or re-opening "Submit model"
+    // doesn't re-trigger edit mode.
+    if (new URLSearchParams(location.search).has('edit')) {
+      const url = new URL(location.href);
+      url.searchParams.delete('edit');
+      history.replaceState(null, '', url);
+    }
   }
 
-  els.open?.addEventListener('click', openModal);
+  els.open?.addEventListener('click', () => openModal());
   els.close?.addEventListener('click', closeModal);
 
   els.modal?.addEventListener('click', (e) => {
@@ -92,4 +137,7 @@
     if (!validation.valid) e.preventDefault();
   });
 
+  // Public API: app.js calls this once model data has loaded, when the
+  // page was opened as index.html?edit=<id>.
+  window.ModelRegistrySubmit = { openForEdit: openModal };
 })();

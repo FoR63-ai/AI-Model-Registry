@@ -281,6 +281,7 @@
 
     table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: collapse;
       margin-top: 12px;
       border-top: 2px solid var(--ink);
@@ -291,6 +292,7 @@
       padding: 16px 14px 16px 0;
       border-bottom: 1px solid var(--border-soft);
       vertical-align: top;
+      overflow-wrap: break-word;
     }
 
     th:first-child, td:first-child {
@@ -303,7 +305,6 @@
       letter-spacing: 0.06em;
       color: var(--muted-2);
       font-weight: 500;
-      white-space: nowrap;
       border-bottom: 1px solid var(--border);
       padding-top: 0;
       padding-bottom: 12px;
@@ -581,6 +582,15 @@
   <div class="muted" id="count">Loading models…</div>
 
   <table>
+    <colgroup>
+      <col style="width:21%;" />
+      <col style="width:12%;" />
+      <col style="width:10%;" />
+      <col style="width:16%;" />
+      <col style="width:17%;" />
+      <col style="width:14%;" />
+      <col style="width:10%;" />
+    </colgroup>
     <thead>
       <tr>
         <th>Model name</th>

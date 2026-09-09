@@ -134,7 +134,14 @@
 
   els.openIssue?.addEventListener('click', (e) => {
     const validation = updateSubmitLink();
-    if (!validation.valid) e.preventDefault();
+    if (!validation.valid) {
+      e.preventDefault();
+      return;
+    }
+    // The link opens the GitHub issue in a new tab (target="_blank"), so
+    // closing the modal here doesn't interrupt that — no more needing to
+    // scroll up and click Close after submitting or saving.
+    closeModal();
   });
 
   // Public API: app.js calls this once model data has loaded, when the

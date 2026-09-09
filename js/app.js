@@ -4,7 +4,8 @@
     esc,
     uniqueSorted,
     buildSearchText,
-    normalizeModel
+    normalizeModel,
+    formatDate
   } = window.ModelRegistryUtils;
 
   const { loadModels } = window.ModelRegistryData;
@@ -50,7 +51,9 @@
       org_asc: (a, b) => (a.organisation || '').localeCompare(b.organisation || ''),
       org_desc: (a, b) => (b.organisation || '').localeCompare(a.organisation || ''),
       status_asc: (a, b) => (a.modelStatus || '').localeCompare(b.modelStatus || ''),
-      status_desc: (a, b) => (b.modelStatus || '').localeCompare(a.modelStatus || '')
+      status_desc: (a, b) => (b.modelStatus || '').localeCompare(a.modelStatus || ''),
+      updated_desc: (a, b) => (b.lastUpdated || '').localeCompare(a.lastUpdated || ''),
+      updated_asc: (a, b) => (a.lastUpdated || '').localeCompare(b.lastUpdated || '')
     };
 
     return items.slice().sort(sorters[sortValue] || sorters.name_asc);
@@ -74,17 +77,18 @@
 
     els.rows.innerHTML = items.map((m) => `
       <tr>
-        <td>
+        <td data-label="Model name">
           <a href="detail.html?id=${encodeURIComponent(m.id)}">
             <strong>${esc(m.modelName || m.id || 'Untitled model')}</strong>
           </a>
           <div class="muted" style="padding-right:0;">${esc(m.id || '')}</div>
         </td>
-        <td>${esc(m.organisation || '—')}</td>
-        <td>${m.modelStatus ? `<span class="badge">${esc(m.modelStatus)}</span>` : '—'}</td>
-        <td>${esc(m.aiTask || '—')}</td>
-        <td>${esc(m.primaryPerformanceMetric || '—')}</td>
-        <td>${esc(m.license || '—')}</td>
+        <td data-label="Organisation">${esc(m.organisation || '—')}</td>
+        <td data-label="Model Status">${m.modelStatus ? `<span class="badge">${esc(m.modelStatus)}</span>` : '—'}</td>
+        <td data-label="AI task">${esc(m.aiTask || '—')}</td>
+        <td data-label="Primary performance metric">${esc(m.primaryPerformanceMetric || '—')}</td>
+        <td data-label="License">${esc(m.license || '—')}</td>
+        <td data-label="Last updated">${formatDate(m.lastUpdated)}</td>
       </tr>
     `).join('');
 
@@ -122,6 +126,14 @@
       populateFilters();
       wire();
       render();
+
+      const editId = new URLSearchParams(location.search).get('edit');
+      if (editId) {
+        const model = DATA.find((item) => String(item.id) === String(editId));
+        if (model && window.ModelRegistrySubmit) {
+          window.ModelRegistrySubmit.openForEdit(model);
+        }
+      }
     } catch (error) {
       console.error(error);
       els.count.textContent = 'Failed to load models.';

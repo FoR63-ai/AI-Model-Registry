@@ -242,6 +242,10 @@
       border-bottom-color: var(--accent);
     }
 
+    input:read-only {
+      color: var(--muted-2);
+    }
+
     textarea {
       min-height: 100px;
       resize: vertical;
@@ -488,6 +492,11 @@
         padding: 4px 0;
       }
 
+      td[data-label]:not(:first-child)::before {
+        content: attr(data-label) ": ";
+        color: var(--muted-2);
+      }
+
       tr {
         padding: 16px 0;
         border-bottom: 1px solid var(--border-soft);
@@ -561,6 +570,8 @@
         <option value="org_desc">Organisation (Z–A)</option>
         <option value="status_asc">Model Status (A–Z)</option>
         <option value="status_desc">Model Status (Z–A)</option>
+        <option value="updated_desc">Last updated (newest)</option>
+        <option value="updated_asc">Last updated (oldest)</option>
       </select>
     </div>
 
@@ -578,6 +589,7 @@
         <th>AI task</th>
         <th>Primary performance metric</th>
         <th>License</th>
+        <th>Last updated</th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
@@ -591,7 +603,7 @@
   <div class="modal-card">
     <div class="modal-head">
       <div>
-        <h2>Create a new model JSON</h2>
+        <h2 id="submitTitle">Create a new model JSON</h2>
         <div class="muted no-pad">
           This creates a JSON preview for <code>data/models/</code> and can open a prefilled GitHub issue.
         </div>

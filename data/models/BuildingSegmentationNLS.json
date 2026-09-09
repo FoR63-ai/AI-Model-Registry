@@ -10,5 +10,6 @@
   "trainingDataOrigin": "The model has been trained with remote sensing data from different parts of Finland collected by the NLS.",
   "primaryPerformanceMetric": "F1-score: ~0.93",
   "license": "MIT",
-  "accessLink": "https://github.com/nlsfi/topographic-data-ai-tools/tree/main/building-segmentation"
+  "accessLink": "https://github.com/nlsfi/topographic-data-ai-tools/tree/main/building-segmentation",
+  "lastUpdated": "2026-06-03T06:18:43.000Z"
 }

@@ -10,5 +10,6 @@
   "trainingDataOrigin": "KDS spring ortofoto ,  oblique images (LOD) lidar based DSM DTM",
   "primaryPerformanceMetric": "% validationaccuracy",
   "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_Permeable_surfaces/blob/main/iter_79_99.pth",
-  "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259"
+  "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259",
+  "lastUpdated": "2026-06-03T06:14:41.000Z"
 }

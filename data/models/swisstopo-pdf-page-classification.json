@@ -10,5 +10,6 @@
   "trainingDataOrigin": "Manually labelled geological documents from Switzerland",
   "primaryPerformanceMetric": "Classification macro F1 score: 80%",
   "license": "AGPL 3.0",
-  "accessLink": "https://github.com/swisstopo/swissgeol-assets-dataextraction"
+  "accessLink": "https://github.com/swisstopo/swissgeol-assets-dataextraction",
+  "lastUpdated": "2026-05-19T05:52:20.000Z"
 }

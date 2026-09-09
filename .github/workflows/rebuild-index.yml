@@ -1,0 +1,43 @@
+name: Rebuild Model Index
+
+# Keeps data/models.json (the single file the site fetches — see
+# scripts/build-index.mjs) in sync whenever data/models/ changes, no
+# matter how it changed: the approve-model.yml workflow already rebuilds
+# it after processing an issue, but this covers any other path a change
+# could land on main (a direct commit, a manually merged PR, ...), so the
+# site never silently serves a stale index.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/models/**'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Rebuild aggregate index
+        run: npm run build-index
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/models.json
+          if git diff --cached --quiet; then
+            echo "data/models.json already up to date"
+            exit 0
+          fi
+          git commit -m "Rebuild data/models.json index"
+          git push

@@ -8,5 +8,6 @@
   "outputSpecification": "1 band raster with 2 classes: solar panel and other. \\nAfter post-processing output is: geopackage with polygons of ground-mounted solar parks. Number of panels in solar park is included as attribute.",
   "architecture": "UNet",
   "trainingDataOrigin": "Estonia",
-  "moreInformation": "In combination with existing Estonian Topographic Database and post-processing the precision of new solar parks detected is ~80-90% (from 600 \\\"potential solar park\\\" polygons ~500-570 will be real ones)"
+  "moreInformation": "In combination with existing Estonian Topographic Database and post-processing the precision of new solar parks detected is ~80-90% (from 600 \\\"potential solar park\\\" polygons ~500-570 will be real ones)",
+  "lastUpdated": "2026-05-19T07:11:20.000Z"
 }

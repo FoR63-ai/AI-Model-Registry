@@ -11,5 +11,6 @@
   "primaryPerformanceMetric": "77.5 O.A. ; 64.1 mIoU",
   "license": "Etalab 2.0",
   "accessLink": "https://huggingface.co/collections/IGNF/flair-hub-models-land-cover-lc",
-  "moreInformation": "Project page : https://ignf.github.io/FLAIR/ \nPublication : https://www.sciencedirect.com/science/article/pii/S0924271626001899\nAssociated code : https://github.com/IGNF/FLAIR-HUB/"
+  "moreInformation": "Project page : https://ignf.github.io/FLAIR/ \nPublication : https://www.sciencedirect.com/science/article/pii/S0924271626001899\nAssociated code : https://github.com/IGNF/FLAIR-HUB/",
+  "lastUpdated": "2026-04-29T09:41:13.000Z"
 }

@@ -11,5 +11,6 @@
   "primaryPerformanceMetric": "No quantitative primary performance metric available. The prototypes have been tested by external parties. It is difficult to make a definitive assessment: on the one hand, the potential of conversational interfaces to lower the barrier for non expert users is highlighted; on the other hand, there are issues of trust and performance that need to be addressed.",
   "license": "Not publicly reusable. Internal code only.",
   "accessLink": "N/A",
-  "moreInformation": "Published documentation: https://www.geoinformation.ch/de/projektseite-llm\nInternal final report available on request."
+  "moreInformation": "Published documentation: https://www.geoinformation.ch/de/projektseite-llm\nInternal final report available on request.",
+  "lastUpdated": "2026-05-19T05:58:56.000Z"
 }

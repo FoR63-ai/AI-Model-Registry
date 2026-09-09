@@ -166,7 +166,10 @@ window.ModelRegistryUtils = (function () {
     if (!text) return '—';
     const date = new Date(text);
     if (Number.isNaN(date.getTime())) return esc(text);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    // Force English regardless of the viewer's browser/OS locale — using
+    // `undefined` here previously meant a Swedish-locale browser rendered
+    // Swedish month names ("19 maj 2026") on an otherwise English site.
+    return date.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
   // mode: 'add' (default) or 'update'. Both produce a prefilled GitHub issue

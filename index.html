@@ -722,10 +722,15 @@
   </div>
 </dialog>
 
-<script src="js/config.js"></script>
-<script src="js/common.js"></script>
-<script src="js/data-loader.js"></script>
-<script src="js/app.js"></script>
-<script src="js/submit.js"></script>
+<!-- The ?v= query string busts browser/CDN caches on every deploy that
+     changes JS behavior — bump it whenever js/*.js changes, otherwise
+     visitors with a cached copy of one file but not another can hit
+     mismatched-version errors (e.g. new HTML calling a function an old
+     cached script doesn't have yet). -->
+<script src="js/config.js?v=20260909a"></script>
+<script src="js/common.js?v=20260909a"></script>
+<script src="js/data-loader.js?v=20260909a"></script>
+<script src="js/app.js?v=20260909a"></script>
+<script src="js/submit.js?v=20260909a"></script>
 </body>
 </html>

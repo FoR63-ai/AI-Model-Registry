@@ -1,0 +1,14 @@
+{
+  "id": "i-transport-network-semantic-segmentation-model",
+  "modelName": "Transport network semantic segmentation model",
+  "organisation": "National Geographic Institute (Spain)",
+  "modelStatus": "In production",
+  "aiTask": "Semantic segmentation.",
+  "inputSpecification": "- Format: 3-band RGB GeoTIFF, 8-bit unsigned integer (0–255), natural colour, band order R, G, B.\n- Resolution: 0.25 m ground sampling distance. The model was trained and validated only on PNOA orthophotos from the Spanish National Aerial Orthophotography Plan at 0.25 m.\n- CRS: Works in pixel space, so any projected CRS is accepted. Training data were in the native PNOA projection, ETRS89 / UTM.\n- Size: Any. Images of any size, including full PNOA sheets, are processed with a 512 × 512 sliding window. A 150 px overlap is recommended (it is the one used in production).",
+  "outputSpecification": "- Format: Single-band GeoTIFF, uint8, LZW-compressed and internally tiled, <input_name>_mask.tif.\n- Spatial properties: Same extent, pixel size, CRS and geotransform as the input image.\n- Class schema: Binary. 1 = paved road, 0 = background. “Paved road” merges the four road classes used in training: dual carriageways, roads with longitudinal markings, roads without longitudinal markings, and urban streets. Unpaved tracks are labelled as background.\n- Confidence (optional): A second GeoTIFF, <input_name>_prob.tif, stores the road probability per pixel as uint8, where value / 255 = probability.",
+  "architecture": "U-Net convolutional neural network with an Inception-ResNet-v2 encoder pretrained on ImageNet. One output channel with sigmoid activation (binary semantic segmentation). Implemented in PyTorch with the segmentation_models_pytorch library.",
+  "trainingDataOrigin": "512 × 512 px tiles cut from PNOA 0.25 m orthophotos. Labels are created manually, captured in 44 working areas. Geographic scope: Working areas in Spain. Training, validation and test sets are split by whole working area, so no area contributes tiles to more than one set. The test set covers six working areas. Time period: [PNOA flight years used — to complete]. Public availability: The source orthophotos are published by IGN/CNIG. The derived training tiles and masks are not published. Known limitations and biases: Lower recall on roads without longitudinal markings (72 % of pixels detected) and on urban streets (67 %). Narrow paved tracks often get low probabilities. Some unpaved tracks are partly detected as roads. Performance varies between areas: test IoU ranges from 0.65 to 0.93 per working area.",
+  "primaryPerformanceMetric": "Road-class IoU = 0.814. Accuracy = 9.93. F1 = 0.9. Recall = 0.87.",
+  "moreInformation": "Contact: Manuel Miñambres Vidal (mmvidal@transportes.gob.es) Head of Service of Transport Network at National Geographic Institute of Spain.",
+  "lastUpdated": "2026-11-16T08:37:08.387Z"
+}

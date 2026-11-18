@@ -8,6 +8,7 @@
   "outputSpecification": "resolution and size ,same as input\ngives logits for each class (buildign and background)",
   "architecture": "Backbone: Swin Transformer,  Decoder: UPerNet",
   "trainingDataOrigin": "KDS spring ortofoto 2024 2025",
+  "primaryPerformanceMetric": "99.5 % validation acuracy",
   "moreInformation": "To be used as part of ensamble in production test 2026 (buildigns change detection). The training images have been transformed to align rooftops with building footprints. As a result, the model detects the position of rooftops rather than the actual positions of buildings. \n\nMore info at : \nhttps://github.com/SDFIdk/ML_sdfi_fastai2/tree/SOTA_models_2026\nhttps://github.com/SDFIdk/ML_geo_production",
-  "lastUpdated": "2026-04-20T08:29:34.000Z"
+  "lastUpdated": "2026-11-18T15:05:05.515Z"
 }

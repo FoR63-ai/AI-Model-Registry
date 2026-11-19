@@ -1,6 +1,6 @@
 {
   "id": "kds-iter-79-resnet34-permeable-surfaces",
-  "modelName": "iter_79_resnet34_permeable_surfaces",
+  "modelName": "surface classification",
   "organisation": "KDS",
   "modelStatus": "Produktion",
   "aiTask": "Semantic segmentation",
@@ -11,5 +11,5 @@
   "primaryPerformanceMetric": "97.1% validationaccuracy",
   "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_Permeable_surfaces/blob/main/iter_79_99.pth",
   "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259\ncontact rasmus at KDS for acess to hugginface model",
-  "lastUpdated": "2026-11-19T13:53:42.513Z"
+  "lastUpdated": "2026-11-19T15:00:51.936Z"
 }

@@ -148,21 +148,6 @@
     "lastUpdated": "2026-11-19T14:46:16.686Z"
   },
   {
-    "id": "kds-iter-79-resnet34-permeable-surfaces",
-    "modelName": "iter_79_resnet34_permeable_surfaces",
-    "organisation": "KDS",
-    "modelStatus": "Produktion",
-    "aiTask": "Semantic segmentation",
-    "inputSpecification": "The model was trained on 10 cm resolution multi-channel imagery, including DSM and DTM data, RGB-NIR orthophotos, and RGB-NIR oblique images (LOD). \nAll 10 available channels were used.",
-    "outputSpecification": "resolution and size is the same as input\ngives logits for each class \nclasses are: asphalt, paving_stones, gravel, unpaved, green_roof, greenhouse,  concrete_surface, cobblestones",
-    "architecture": "backbone resnet34 ,  Decoder Unet",
-    "trainingDataOrigin": "KDS spring ortofoto ,  oblique images (LOD) lidar based DSM DTM",
-    "primaryPerformanceMetric": "97.1% validationaccuracy",
-    "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_Permeable_surfaces/blob/main/iter_79_99.pth",
-    "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259\ncontact rasmus at KDS for acess to hugginface model",
-    "lastUpdated": "2026-11-19T13:53:42.513Z"
-  },
-  {
     "id": "k-kds-spt-laz-classifier",
     "modelName": "KDS_spt_laz_classifier",
     "organisation": "KDS",
@@ -399,6 +384,21 @@
     "accessLink": "N/A",
     "moreInformation": "Geo Expertise Centre of Kadaster Nederland",
     "lastUpdated": "2026-11-19T14:47:31.199Z"
+  },
+  {
+    "id": "kds-iter-79-resnet34-permeable-surfaces",
+    "modelName": "surface classification",
+    "organisation": "KDS",
+    "modelStatus": "Produktion",
+    "aiTask": "Semantic segmentation",
+    "inputSpecification": "The model was trained on 10 cm resolution multi-channel imagery, including DSM and DTM data, RGB-NIR orthophotos, and RGB-NIR oblique images (LOD). \nAll 10 available channels were used.",
+    "outputSpecification": "resolution and size is the same as input\ngives logits for each class \nclasses are: asphalt, paving_stones, gravel, unpaved, green_roof, greenhouse,  concrete_surface, cobblestones",
+    "architecture": "backbone resnet34 ,  Decoder Unet",
+    "trainingDataOrigin": "KDS spring ortofoto ,  oblique images (LOD) lidar based DSM DTM",
+    "primaryPerformanceMetric": "97.1% validationaccuracy",
+    "accessLink": "https://huggingface.co/rasmuspjohansson/KDS_Permeable_surfaces/blob/main/iter_79_99.pth",
+    "moreInformation": "Used for the production of https://dataforsyningen.dk/labs/2259\ncontact rasmus at KDS for acess to hugginface model",
+    "lastUpdated": "2026-11-19T15:00:51.936Z"
   },
   {
     "id": "k-train-1km2benchmark-iter-71-effnet-L",

@@ -85,20 +85,6 @@
     "lastUpdated": "2026-05-19T05:56:59.000Z"
   },
   {
-    "id": "i-object-classification-of-als-lidar-point-clouds",
-    "modelName": "Classification of Airborne LiDAR Point Clouds",
-    "organisation": "ICGC",
-    "modelStatus": "In production",
-    "aiTask": "Point classification",
-    "inputSpecification": "- Required LAS fields: coordinates, intensity, RGB and NIR, ground already classified, since Height Above Ground (HAG) depends on it.\n- Point density: training dataset has at least 10 pts/m² average per tile, with some zones averaging 16 pts/m².\n- Model input size: 80 × 80 m subtiles. The built-in preprocessing step generates them automatically, so .LAS tiles of any size can be used as input.\n- Input vector per point: x, y, z, I, R, G, B, NIR, NDVI, HAG\n- NDVI is computed by the code from NIR/R\n- Height Above Ground(HAG) is computed from classified ground points\n- CRS: ETRS89 / UTM 31N (EPSG:25831)",
-    "outputSpecification": "The output is a .LAS file with one class label per point, attached to the original point coordinates. \nClasses: transmission tower, power line, wind turbine.",
-    "architecture": "PointNet++",
-    "trainingDataOrigin": "〜100km2 Internal dataset + TerLiDAR dataset (https://github.com/marionacaros/terlidar) TerLiDAR is a fully open and annotated airborne LiDAR dataset that covers 51.4 km² of urban and forested areas along the Ter River in Catalonia, Spain. The data were acquired in July 2021 using an ALS system mounted on a georeferenced aircraft operated by ICGC. The dataset comprises 692 million colorized 3D points.",
-    "primaryPerformanceMetric": "tower IoU:79.3, powerlines IoU:94.85, windturbine IoU:97.9",
-    "moreInformation": "The input .LAS tiles are first preprocessed. Height above ground (HAG) is computed from the classified ground points and NDVI from the NIR and red bands. Each tile is then split into 80 × 80 m subtiles, and coordinates and features are normalised. Each subtile is classified point by point by a PointNet++ network. Inference is uncertainty-based: every point is predicted twice from two random samplings, and points where the two predictions disagree are resampled around the uncertain area and classified again. Finally, the subtile predictions are merged and written back to the original tile as a .LAS file with one class label per point.\n\nAccess link shared under demand.\n\nRelated publications:\nhttps://www.sciencedirect.com/science/article/pii/S2667393226000050?via%3Dihub\nhttps://ieeexplore.ieee.org/abstract/document/10216191",
-    "lastUpdated": "2026-11-19T13:45:53.551Z"
-  },
-  {
     "id": "swisstopo-classification-of-lithological-properties",
     "modelName": "Classification of lithological properties",
     "organisation": "swisstopo",
@@ -317,6 +303,20 @@
     "license": "Model only for internal use",
     "moreInformation": "Within the Digital Twin Germany (DigiZ-DE) [1] aviation obstacles are being identified from 3D ALS data. The obstacle type is usually derived from the dominant semantic class already present in the data, but more detailed information about the obstacles is needed. In a preprocessing pipeline high objects > 40 m from the \"Unclassified\" class are extracted using rule-based methods and clustered and afterwards fed into a PointNet, trained from scratch, for object-wise classification. The training data is imbalanced, resulting in varying class-wise performance. For major classes such as wind turbines, power poles, and power lines, the model achieves approximately 95% precision, recall, and F1-score.\n\n[1] Digitaler Zwilling Deutschland (DigiZ-DE): https://www.bkg.bund.de/DE/Forschung/Projekte/Digitaler-Zwilling/Digitaler-Zwilling_cont.html",
     "lastUpdated": "2026-06-22T07:57:59.000Z"
+  },
+  {
+    "id": "i-object-classification-of-als-lidar-point-clouds",
+    "modelName": "Power Lines and Wind Turbines Classification of Airborne LiDAR Point Clouds",
+    "organisation": "ICGC",
+    "modelStatus": "In production",
+    "aiTask": "Point classification",
+    "inputSpecification": "- Required LAS fields: coordinates, intensity, RGB and NIR, ground already classified, since Height Above Ground (HAG) depends on it.\n- Point density: training dataset has at least 10 pts/m² average per tile, with some zones averaging 16 pts/m².\n- Model input size: 80 × 80 m subtiles. The built-in preprocessing step generates them automatically, so .LAS tiles of any size can be used as input.\n- Input vector per point: x, y, z, I, R, G, B, NIR, NDVI, HAG\n- NDVI is computed by the code from NIR/R\n- Height Above Ground(HAG) is computed from classified ground points\n- CRS: ETRS89 / UTM 31N (EPSG:25831)",
+    "outputSpecification": "The output is a .LAS file with one class label per point, attached to the original point coordinates. \nClasses: transmission tower, power line, wind turbine.",
+    "architecture": "PointNet++",
+    "trainingDataOrigin": "〜100km2 Internal dataset + TerLiDAR dataset (https://github.com/marionacaros/terlidar) TerLiDAR is a fully open and annotated airborne LiDAR dataset that covers 51.4 km² of urban and forested areas along the Ter River in Catalonia, Spain. The data were acquired in July 2021 using an ALS system mounted on a georeferenced aircraft operated by ICGC. The dataset comprises 692 million colorized 3D points.",
+    "primaryPerformanceMetric": "tower IoU:79.3, powerlines IoU:94.85, windturbine IoU:97.9",
+    "moreInformation": "The input .LAS tiles are first preprocessed. Height above ground (HAG) is computed from the classified ground points and NDVI from the NIR and red bands. Each tile is then split into 80 × 80 m subtiles, and coordinates and features are normalised. Each subtile is classified point by point by a PointNet++ network. Inference is uncertainty-based: every point is predicted twice from two random samplings, and points where the two predictions disagree are resampled around the uncertain area and classified again. Finally, the subtile predictions are merged and written back to the original tile as a .LAS file with one class label per point.\n\nAccess link shared under demand. \nContact: mariona.caros@icgc.cat\n\nRelated publications:\nhttps://www.sciencedirect.com/science/article/pii/S2667393226000050?via%3Dihub\nhttps://ieeexplore.ieee.org/abstract/document/10216191",
+    "lastUpdated": "2026-11-19T15:44:38.761Z"
   },
   {
     "id": "model-003",

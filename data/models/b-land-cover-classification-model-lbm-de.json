@@ -1,0 +1,8 @@
+{
+  "id": "b-land-cover-classification-model-lbm-de",
+  "modelName": "Land cover classification model (LBM-DE)",
+  "organisation": "BKG",
+  "modelStatus": "Validated",
+  "aiTask": "Semantic segmentation",
+  "lastUpdated": "2026-11-19T14:39:03.040Z"
+}

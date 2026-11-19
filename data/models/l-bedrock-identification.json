@@ -1,0 +1,14 @@
+{
+  "id": "l-bedrock-identification",
+  "modelName": "Bedrock identification",
+  "organisation": "Lantmäteriet",
+  "modelStatus": "Experimental",
+  "aiTask": "Segmentation",
+  "inputSpecification": "Orthophotos 16cm or 40cm, SWEREF99",
+  "outputSpecification": "A mask of bedrock in 16cm",
+  "architecture": "Segformer",
+  "trainingDataOrigin": "Swedish",
+  "primaryPerformanceMetric": "Validation accuracy (95%)",
+  "license": "Not available for external use",
+  "lastUpdated": "2026-11-19T14:43:02.782Z"
+}

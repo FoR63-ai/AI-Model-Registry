@@ -164,6 +164,22 @@
     "lastUpdated": "2026-05-19T05:58:56.000Z"
   },
   {
+    "id": "i-maestro",
+    "modelName": "MAESTRO - Flairhub",
+    "organisation": "IGN-F",
+    "modelStatus": "In Production",
+    "aiTask": "Pre-trained EO semantic segmentation backbone",
+    "inputSpecification": "This model is pre-trained on FLAIR-HUB.\n\nFLAIR-HUB contains 241,100 tiles of size 102.4 × 102.4 m, covering a total area of 2,528 km² across France.\n\nWe retain six distinct modalities:\n\nAerial imagery RGB + NIR (0.2 m resolution)\nDEM/DSM imagery (0.2 m resolution)\nSPOT 6–7 imagery\nSentinel-1 time series in ascending orbit\nSentinel-1 time series in descending orbit\nSentinel-2 time series",
+    "outputSpecification": "Same as input for best results.",
+    "architecture": "Masked Auto-Encoder (MAE)",
+    "trainingDataOrigin": "IGN-F",
+    "primaryPerformanceMetric": "-",
+    "license": "Etalab 2.0",
+    "accessLink": "https://huggingface.co/IGNF/MAESTRO_FLAIR-HUB_base",
+    "moreInformation": "Code repo : https://github.com/IGNF/MAESTRO\narXiv : https://arxiv.org/abs/2508.10894\nContact : flair@ign.fr",
+    "lastUpdated": "2026-11-19T13:56:30.930Z"
+  },
+  {
     "id": "b-minkunet14a-for-tower-conductor-segmentation-in",
     "modelName": "MinkUNet14A for Tower--Conductor Segmentation in ALS LiDAR Point Clouds",
     "organisation": "BKG",

@@ -1,0 +1,13 @@
+{
+  "id": "k-digitizing-historical-map",
+  "modelName": "Digitalisation of Historical Cartographic Data",
+  "organisation": "KDS",
+  "modelStatus": "Experimental",
+  "aiTask": "find symbols in old maps in order to make it digital",
+  "inputSpecification": "raster",
+  "outputSpecification": "points",
+  "architecture": "YOLO",
+  "trainingDataOrigin": "old danish maps (KDS)",
+  "accessLink": "https://github.com/rasmuspjohansson/danish-historical-map-yolo",
+  "lastUpdated": "2026-11-19T15:18:15.493Z"
+}

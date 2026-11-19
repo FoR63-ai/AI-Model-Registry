@@ -1,0 +1,14 @@
+{
+  "id": "i-vehicle-classification-of-airborne-lidar-point-c",
+  "modelName": "Vehicle Classification of Airborne LiDAR Point Clouds",
+  "organisation": "ICGC",
+  "modelStatus": "In production",
+  "aiTask": "Point classification",
+  "inputSpecification": "- Required LAS fields: coordinates, intensity, RGB and NIR, ground already classified, since Height Above Ground (HAG) depends on it.\n- Point density: training dataset has at least 10 pts/m² average per tile, with some zones averaging 16 pts/m².\n- Model input size: 25 × 25 m subtiles. The built-in preprocessing step generates them automatically, so .LAS tiles of any size can be used as input.\n- Input vector per point: x, y, z, I, R, G, B, NIR, NDVI, HAG\n- NDVI is computed by the code from NIR/R\n- Height Above Ground(HAG) is computed from classified ground points\n- CRS: ETRS89 / UTM 31N (EPSG:25831)",
+  "outputSpecification": "The output is a .LAS file per tile with points classified as vehicles, attached to the original point coordinates.",
+  "architecture": "PointNet++",
+  "trainingDataOrigin": "The point clouds come from the ICGC’s publicly available Territorial LiDAR (https://www.icgc.cat/en/Geoinformation-and-Maps/Data-and-products/Elevations/Territorial-elevations/Territorial-LiDAR). The training labels were produced internally by the ICGC and are not yet publicly available.",
+  "primaryPerformanceMetric": "vehicle IoU:79.4, F-score:81.2",
+  "moreInformation": "The pipeline is the following: First, the input .LAS tiles are preprocessed. Height above ground (HAG) is computed from the classified ground points and NDVI from the NIR and red bands. Each tile is then split into 25 × 25 m subtiles, and coordinates and features are normalised. Each subtile is fed into the network and classified point by point. Finally, the subtile predictions are merged and written back to the original tile as a .LAS file with identified vehicle points.\n\nAccess link shared under demand.",
+  "lastUpdated": "2026-11-19T13:49:22.928Z"
+}

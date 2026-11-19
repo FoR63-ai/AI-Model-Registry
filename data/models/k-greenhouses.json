@@ -1,0 +1,16 @@
+{
+  "id": "k-greenhouses",
+  "modelName": "Greenhouses",
+  "organisation": "Kadaster Nederland",
+  "modelStatus": "In production",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "The model requires true orthos in tiff or png format. Input images must be 1024x1024 pixels. Orthos must be provided as a 3-channel image with 8 - 10 cm resolution.",
+  "outputSpecification": "The model outputs a YOLOv26 text file containing one line for every detection containing a class id and ploygon in local (0.0-1.0) coordinates",
+  "architecture": "YOLOv26 (YOLO26m-seg)",
+  "trainingDataOrigin": "The model has been trained on true orthos from different parts of The Netherlands.",
+  "primaryPerformanceMetric": "Precision > 85% (less for some classes)",
+  "license": "Not public available",
+  "accessLink": "N/A",
+  "moreInformation": "Geo Expertise Centre of Kadaster Nederland",
+  "lastUpdated": "2026-11-19T14:21:13.661Z"
+}

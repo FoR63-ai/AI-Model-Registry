@@ -29,6 +29,18 @@
     "lastUpdated": "2026-05-19T05:50:20.000Z"
   },
   {
+    "id": "i-building-segmentation",
+    "modelName": "Building-segmentation-ICGC",
+    "organisation": "ICGC",
+    "modelStatus": "Validated",
+    "aiTask": "Semantic segmentation",
+    "inputSpecification": "RGBI-channels from orthophoto with 25 cm resolution and LiDAR nDSM at 1 m resolution resampled to 25cm\nzarr format",
+    "outputSpecification": "The model generates a two-channel logit map per pixel (representing background and building classes) in TIFF format, which is transformed into a geopackage",
+    "architecture": "U-Net",
+    "trainingDataOrigin": "Remote sensing data from different parts of Catalonia collected by the ICGC.",
+    "lastUpdated": "2026-11-19T15:34:06.075Z"
+  },
+  {
     "id": "model-002",
     "modelName": "Buildings detection model",
     "organisation": "Lantmäteriet",

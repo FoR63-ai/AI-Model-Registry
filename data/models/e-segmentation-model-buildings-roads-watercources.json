@@ -1,0 +1,15 @@
+{
+  "id": "e-segmentation-model-buildings-roads-watercources",
+  "modelName": "Segmentation model (Buildings, roads, watercources)",
+  "organisation": "Estonian Land and Spatial Development Board",
+  "modelStatus": "Experimental (in development)",
+  "aiTask": "Semantic segmentation",
+  "inputSpecification": "Current state is 12 bands TIFF raster with GSD 10cm:\n- RGBN orthophoto\n- RGB true-orthophoto\n- nDSM (derived from LiDAR)\n- Hillshade (derived from LiDAR)\n- Intensity (derived from LiDAR)\n- Openness (derived from LiDAR)\n- Classes (derived from LiDAR pointcloud classification)\n\nModel is in development, input bands may change",
+  "outputSpecification": "4 band TIFF raster with GSD 10cm:\n- buildings\n- roads\n- watercources\n- other",
+  "architecture": "Visual transformer or latest Visual Language models are considered to be used",
+  "trainingDataOrigin": "Estonian orthophotos and elevation data from 2025. Labels created internally based on reviewed Topographic Database data",
+  "primaryPerformanceMetric": "Not avaliable yet",
+  "license": "Not for public use",
+  "accessLink": "N/A",
+  "lastUpdated": "2026-11-19T14:49:28.229Z"
+}

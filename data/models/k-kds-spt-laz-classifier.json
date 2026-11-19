@@ -1,0 +1,15 @@
+{
+  "id": "k-kds-spt-laz-classifier",
+  "modelName": "KDS_spt_laz_classifier",
+  "organisation": "KDS",
+  "modelStatus": "Experimental",
+  "aiTask": "point cloud semantic segmetnation",
+  "inputSpecification": ".laz files\n5 point per square meter\nintensity\nno colour",
+  "outputSpecification": "same .laz file but with classification atribute updated to classification",
+  "architecture": "superpoint transformer",
+  "trainingDataOrigin": "KDS",
+  "primaryPerformanceMetric": "val mIoU\t~41.15",
+  "accessLink": "https://huggingface.co/Danish-Agency-for-Cimate-Data/KDS_spt_laz/tree/main",
+  "moreInformation": "Trained on a \"toy dataset\" consisting of 4 km2 of copenhagen data\nA larger more diverse and better labeled dataset is under production\ncontact Rasmus at KDS for more information and acess to model",
+  "lastUpdated": "2026-11-19T13:56:49.658Z"
+}

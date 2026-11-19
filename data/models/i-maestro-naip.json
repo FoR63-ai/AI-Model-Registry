@@ -1,0 +1,16 @@
+{
+  "id": "i-maestro-naip",
+  "modelName": "MAESTRO -  S2-NAIP-urban",
+  "organisation": "IGN-F",
+  "modelStatus": "In Production",
+  "aiTask": "Pre-trained EO semantic segmentation backbone",
+  "inputSpecification": "This model is pre-trained on S2-NAIP urban, an urban subset of S2-NAIP derived by intersecting the S2-NAIP footprints with the urban set defined in Zooming-in zooming-out.\n\nThe resulting subset contains 167,397 tiles of size 640 m × 640 m, covering a total area of 68,565 km2 across the continental United States.\n\nWe retain three distinct modalities:\n\nAerial NAIP imagery RGB + NIR (1.25 m)\nSentinel-1 time series (mixed ascending and descending orbits)\nSentinel-2 time series",
+  "outputSpecification": "Same as input for best results.",
+  "architecture": "Masked Auto-Encoder (MAE)",
+  "trainingDataOrigin": "allenAI",
+  "primaryPerformanceMetric": "-",
+  "license": "Etalab 2.0",
+  "accessLink": "https://huggingface.co/IGNF/MAESTRO_S2-NAIP-urban_base",
+  "moreInformation": "Code repo : https://github.com/IGNF/MAESTRO\narXiv : https://arxiv.org/abs/2508.10894\nContact : flair@ign.fr",
+  "lastUpdated": "2026-11-19T14:41:17.479Z"
+}

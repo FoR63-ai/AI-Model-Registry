@@ -78,6 +78,66 @@ changes that would mean.
 - [ ] Add `tags` to `schema/model.schema.json`, `scripts/validate-models.mjs`
       and `js/common.js` (the validator rejects unknown fields).
 
+## 5. Datasets tab
+
+A second catalogue for datasets that works the same way as the models one:
+search, filters, detail pages, submit/edit/delete via GitHub issues.
+
+Decisions so far:
+- **Placement:** "Models | Datasets" tabs on the front page, each with its own
+  table, search and filters. The selected tab goes in the URL (e.g.
+  `index.html#datasets`) so links to it work.
+- **Approval:** same flow and same approvers as models (submit form opens a
+  GitHub issue, a maintainer applies `approved` / `update-approved` /
+  `delete-approved`).
+- **Linking:** both ways. A model lists the datasets it was trained on, and a
+  dataset's detail page shows the models trained on it.
+
+Proposed fields (draft — adjust before building):
+
+| Field | Notes |
+|---|---|
+| Dataset name * | |
+| Organisation * | Same drop-down as models |
+| Data type * | Drop-down: Raster imagery, Point cloud, Elevation model, Vector, Text/documents, Other |
+| Description | What it contains and what it's for |
+| Source / sensor | e.g. aerial camera, ALS LiDAR, Sentinel-2 |
+| Spatial coverage | Country/region, optionally a bounding box |
+| Time period | Acquisition year(s) |
+| Resolution | Ground sampling distance, or point density for point clouds |
+| Coordinate reference system | EPSG code |
+| Format | e.g. GeoTIFF, LAS/LAZ, GeoPackage |
+| Size | Area, number of tiles or GB |
+| Annotations | Label type (masks, bounding boxes, point labels) and classes, if any |
+| License | Same drop-down as models |
+| Access link | |
+| More information | |
+| Last updated | Set automatically, like models |
+| Tags | Same tag list as models (item 4) |
+
+\* required
+
+Work involved:
+- [ ] Agree the field list above.
+- [ ] `data/datasets/*.json`, a `data/datasets.json` index, a
+      `schema/dataset.schema.json`, and validation — extend
+      `scripts/build-index.mjs` and `scripts/validate-models.mjs` rather than
+      copying them.
+- [ ] Tabs on `index.html`; a dataset detail page.
+- [ ] Submit/edit/delete form for datasets. The GitHub issue must say whether
+      it's a model or a dataset so the approval workflow writes to the right
+      folder; extend `approve-model.yml` and `rebuild-index.yml` to handle
+      `data/datasets/`.
+- [ ] Linking: add a "Training datasets" field to models (a pick-list of
+      registered datasets). Store the link on the model side only, and have
+      the dataset page work out "models trained on this" from that — one
+      source of truth, nothing to keep in sync.
+- [ ] A datasets section on the guidance page.
+- [ ] Items 1, 2 and 4 (drop-downs, info icons, tags) apply to datasets too.
+      For item 3, also evaluate **OGC TrainingDML-AI**, **Croissant** (ML
+      dataset metadata) and **GeoDCAT-AP** for the dataset fields — they fit
+      datasets better than models.
+
 ## Notes
 
 - After any change to `js/*.js`, bump the `?v=` version on the script tags in
